@@ -1,0 +1,15 @@
+{
+  "name": "MMD-QoL-Tweaks",
+  "version": "1.0.1",
+  "factorio_version": "1.1",
+  "title": "MMD QoL/Tweaks",
+  "author": "millerscout",
+  "description": "Some changes that i don't like while playing, and tweaks to some mods.",
+  "dependencies": [
+    "? Krastorio2",
+    "? RampantIndustry",
+    "? Natural_Evolution_Buildings",
+    "? RampantArsenal",
+    "? SteamEngineExtra"
+  ]
+}
