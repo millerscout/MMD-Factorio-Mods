@@ -24,35 +24,9 @@ if mods["RampantArsenal"] then
     if data.raw.recipe["mortar-gun-rampant-arsenal"] then data.raw.recipe["mortar-gun-rampant-arsenal"].hidden = true end
 end
 
-if mods["SteamEngineExtra"] then
+if mods["SteamEngineExtra"] and mods["aai-industry"]then
     data_util = require '__aai-industry__/data-util'
     if data.raw["fuel-category"]["processed-chemical"] then
         data_util.add_fuel_category(data.raw["boiler"]["adikings-boiler-mk2"].energy_source, "vehicle-fuel")
     end
-end
-if mods["Electric Furnaces"] then
-    data:extend(
-        {
-            {
-                type = "recipe",
-                name = "steel-furnace downgrade",
-                ingredients = {
-                    { "electric-steel-furnace", 1 },
-                    { "electronic-circuit",     2 },
-                    { "iron-plate",             2 }
-                },
-                result = "steel-furnace",
-                energy_required = 3,
-                enabled = true
-            },
-            {
-                type = "recipe",
-                name = "electric-stone-furnace downgrade",
-                ingredients = {
-                    { "electric-stone-furnace", 1 }
-                },
-                result = "stone-furnace",
-                enabled = true
-            }
-        })
 end
