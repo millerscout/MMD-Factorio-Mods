@@ -24,9 +24,13 @@ if mods["RampantArsenal"] then
     if data.raw.recipe["mortar-gun-rampant-arsenal"] then data.raw.recipe["mortar-gun-rampant-arsenal"].hidden = true end
 end
 
-if mods["SteamEngineExtra"] and mods["aai-industry"]then
+if mods["SteamEngineExtra"] and mods["aai-industry"] then
     data_util = require '__aai-industry__/data-util'
     if data.raw["fuel-category"]["processed-chemical"] then
         data_util.add_fuel_category(data.raw["boiler"]["adikings-boiler-mk2"].energy_source, "vehicle-fuel")
     end
+end
+
+if  mods["Krastorio2"] then
+     data.raw["item"]["sand"].stack_size = 1000
 end
