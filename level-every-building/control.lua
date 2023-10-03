@@ -1,15 +1,31 @@
 require("util")
+function calculateExpForMining(entity)
+	resources = entity.surface.find_entities_filtered { position = { entity.position.x, entity.position.y }, radius =
+		math.ceil(entity.prototype.mining_drill_radius), type = "resource" }
+	resource_count = 0
+	for key, value in pairs(resources) do
+		resource_count = resource_count + value.amount
+	end
+	if global.built_machines[entity.unit_number].resource_count == nil then
+		global.built_machines[entity.unit_number].resource_count = resource_count
+		return  0
+	else
+		collected = global.built_machines[entity.unit_number].resource_count - resource_count
+		global.built_machines[entity.unit_number].mining_count = collected
+		return collected
+	end
+		
+	
+end
 function getCount(entity)
 	if entity.type == "lab" then
 		return global.built_machines[entity.unit_number].research_count
 	elseif entity.type == "mining-drill" then
-		sera = entity.surface.get_resource_counts()
-		-- //mining_drill_radius
+		
 
-		a = entity.surface.find_entities_filtered { area = { { entity.position.x, entity.position.y },
-			{ entity.tile_width + entity.position.x, entity.tile_height + entity.position.y } }, type = "resource" }
-		print(#a)
-		return global.built_machines[entity.unit_number].mining_count
+		collected = calculateExpForMining(entity)
+
+		return collected
 	else
 		return entity.products_finished
 	end
@@ -20,11 +36,11 @@ function setCount(unit_number, count, name)
 end
 
 function updateCount(old_unit_number, new_unit_number, name)
-	count = 0
+	resource_count = 0
 	if global.built_machines[old_unit_number] ~= nil and global.built_machines[old_unit_number][name] ~= nil then
-		count = global.built_machines[old_unit_number][name]
+		resource_count = global.built_machines[old_unit_number][name]
 	end
-	global.built_machines[new_unit_number][name] = count
+	global.built_machines[new_unit_number][name] = resource_count
 end
 
 function setStoreCount(tab, count)
@@ -35,20 +51,24 @@ end
 function setupMachines()
 	if global.machines == nil then
 		global.machines = {}
-
+		local machines = {}
 		for key, value in pairs(game.entity_prototypes) do
 			print(key)
 
 			rootName, _ = GetRootNameOfMachine(key)
 
-			-- name =
-			if global.machines[rootName] == nil then
-				global.machines[rootName] = {
+			if machines[rootName] == nil then
+				machines[rootName] = {
 					level_name = rootName .. '-level-',
 					max_level = 1
 				}
 			else
-				global.machines[rootName].max_level = global.machines[rootName].max_level + 1
+				machines[rootName].max_level = machines[rootName].max_level + 1
+			end
+		end
+		for rootName, value in pairs(machines) do
+			if value.max_level > 1 then
+				global.machines[rootName] = value
 			end
 		end
 	end
@@ -228,7 +248,7 @@ function insert_inventory_contents(inventory, contents)
 end
 
 function upgrade_factory(surface, targetname, sourceentity)
-	if sourceentity.valid == false then return end
+	unit_number = sourceentity.unit_number
 	finished_products_count = getCount(sourceentity)
 
 	local box = sourceentity.bounding_box
@@ -259,7 +279,7 @@ function upgrade_factory(surface, targetname, sourceentity)
 	local fuel_inventory = get_inventory_contents(sourceentity.get_fuel_inventory())
 	local burnt_result_inventory = get_inventory_contents(sourceentity.get_burnt_result_inventory())
 
-	global.built_machines[sourceentity.unit_number] = nil
+	global.built_machines[unit_number] = nil
 	if sourceentity.type == "assembling-machine" then
 		-- Recipe should survive, but why take that chance.
 		recipe = sourceentity.get_recipe()
@@ -289,10 +309,10 @@ function upgrade_factory(surface, targetname, sourceentity)
 
 
 
-	if sourceentity.type == "lab" then
-		updateCount(sourceentity.unit_number, created.unit_number, "research_count")
-	elseif sourceentity.type == "mining-drill" then
-		updateCount(sourceentity.unit_number, created.unit_number, "mining_count")
+	if created.type == "lab" then
+		updateCount(unit_number, created.unit_number, "research_count")
+	elseif created.type == "mining-drill" then
+		updateCount(unit_number, created.unit_number, "mining_count")
 	else
 		created.products_finished = finished_products_count;
 	end
@@ -326,8 +346,8 @@ function replace_machines(entities)
 			rootName, isRootAlready = GetRootNameOfMachine(entity.name)
 			machine = global.machines[rootName]
 			if machine ~= nil and entity ~= nil then
-				count = getCount(entity)
-				should_have_level = determine_level(count)
+				resource_count = getCount(entity)
+				should_have_level = determine_level(resource_count)
 
 				if isRootAlready then
 					upgrade_factory(entity.surface, machine.level_name .. math.min(should_have_level, machine.max_level),
@@ -392,14 +412,14 @@ function on_mined_entity(event)
 				setStoreCount(global.stored_products_finished_assemblers, event.entity.products_finished)
 			end
 		elseif event.entity.type == "lab" then
-			count = global.built_machines[event.entity.unit_number].research_count
-			if count ~= nil and count > 0 then
-				setStoreCount(global.stored_research_count, event.entity.products_finished)
+			resource_count = global.built_machines[event.entity.unit_number].research_count
+			if resource_count ~= nil and resource_count > 0 then
+				setStoreCount(global.stored_research_count, resource_count)
 			end
 		elseif event.entity.type == "mining-drill" then
-			count = global.built_machines[event.entity.unit_number].mining_count
-			if count ~= nil and count > 0 then
-				setStoreCount(global.stored_mining_count, count)
+			resource_count = global.built_machines[event.entity.unit_number].mining_count
+			if resource_count ~= nil and resource_count > 0 then
+				setStoreCount(global.stored_mining_count, resource_count)
 			end
 		end
 		global.built_machines[event.entity.unit_number] = nil
