@@ -1,0 +1,189 @@
+-- for key, value in pairs(data.raw["transport-belt"]) do
+--     print("transport-belt: " .. key)
+-- end
+-- for key, value in pairs(data.raw["boiler"]) do
+--     --add better efficiency
+--     print("boiler: " .. key)
+-- end
+-- for key, value in pairs(data.raw["generator"]) do
+--     --add better efficiency
+--     print("generator: " .. key)
+-- end
+for key, value in pairs(data.raw["inserter"]) do
+    -- print("inserter: " .. key)
+    --increase stack and velocity?
+end
+-- for key, value in pairs(data.raw["roboport"]) do
+--     --increase range?
+--     print("roboport: " .. key)
+-- end
+
+-- for key, value in pairs(data.raw["turret"]) do
+--     ---enemy turret ignored for now
+--     print("turret: " .. key)
+-- end
+for key, value in pairs(data.raw["ammo-turret"]) do
+    --- cant think in anything right now
+end
+for key, value in pairs(data.raw["electric-turret"]) do
+    --- cant think in anything right now
+end
+for key, value in pairs(data.raw["artillery-turret"]) do
+    --- cant think in anything right now
+end
+-- for key, value in pairs(data.raw["unit-spawner"]) do
+--     print("unit-spawner: " .. key)
+-- end
+-- for key, value in pairs(data.raw["straight-rail"]) do
+--     print("straight-rail: " .. key)
+-- end
+-- for key, value in pairs(data.raw["curved-rail"]) do
+--     print("curved-rail: " .. key)
+-- end
+-- for key, value in pairs(data.raw["locomotive"]) do
+--     print("locomotive: " .. key)
+-- end
+-- for key, value in pairs(data.raw["cargo-wagon"]) do
+--     print("cargo-wagon: " .. key)
+-- end
+-- for key, value in pairs(data.raw["fluid-wagon"]) do
+--     print("fluid-wagon: " .. key)
+-- end
+for key, value in pairs(data.raw["artillery-wagon"]) do
+    print("artillery-wagon: " .. key)
+end
+-- for key, value in pairs(data.raw["simple-entity"]) do
+--     print("simple-entity: " .. key)
+-- end
+-- for key, value in pairs(data.raw["rail-remnants"]) do
+--     print("rail-remnants: " .. key)
+-- end
+-- for key, value in pairs(data.raw["tree"]) do
+--     print("tree: " .. key)
+-- end
+-- for key, value in pairs(data.raw["trivial-smoke"]) do
+--     print("trivial-smoke: " .. key)
+-- end
+-- for key, value in pairs(data.raw["combat-robot"]) do
+--     print("combat-robot: " .. key)
+-- end
+-- for key, value in pairs(data.raw["construction-robot"]) do
+--     print("construction-robot: " .. key)
+-- end
+-- for key, value in pairs(data.raw["logistic-robot"]) do
+--     print("logistic-robot: " .. key)
+-- end
+-- for key, value in pairs(data.raw["capsule"]) do
+--     print("capsule: " .. key)
+-- end
+-- for key, value in pairs(data.raw["repair-tool"]) do
+--     print("repair-tool: " .. key)
+-- end
+-- for key, value in pairs(data.raw["module"]) do
+--     print("module: " .. key)
+-- end
+-- for key, value in pairs(data.raw["ammo"]) do
+--     print("ammo: " .. key)
+-- end
+-- for key, value in pairs(data.raw["gun"]) do
+--     print("gun: " .. key)
+-- end
+-- for key, value in pairs(data.raw["armor"]) do
+--     print("armor: " .. key)
+-- end
+-- for key, value in pairs(data.raw["mining-tool"]) do
+--     print("mining-tool: " .. key)
+-- end
+-- for key, value in pairs(data.raw["item-group"]) do
+--     print("item-group: " .. key)
+-- end
+-- for key, value in pairs(data.raw["item-subgroup"]) do
+--     print("item-subgroup: " .. key)
+-- end
+-- for key, value in pairs(data.raw["recipe"]) do
+--     print("recipe: " .. key)
+-- end
+-- for key, value in pairs(data.raw["autoplace-control"]) do
+--     print("autoplace-control: " .. key)
+-- end
+-- for key, value in pairs(data.raw["map-settings"]) do
+--     print("map-settings: " .. key)
+-- end
+-- for key, value in pairs(data.raw["map-gen-presets"]) do
+--     print("map-gen-presets: " .. key)
+-- end
+-- for key, value in pairs(data.raw["tile-effect"]) do
+--     print("tile-effect: " .. key)
+-- end
+-- for key, value in pairs(data.raw["optimized-decorative"]) do
+--     print("optimized-decorative: " .. key)
+-- end
+-- for key, value in pairs(data.raw["damage-type"]) do
+--     print("damage-type: " .. key)
+-- end
+-- for key, value in pairs(data.raw["ammo-category"]) do
+--     print("ammo-category: " .. key)
+-- end
+-- for key, value in pairs(data.raw["fuel-category"]) do
+--     print("fuel-category: " .. key)
+-- end
+-- for key, value in pairs(data.raw["recipe-category"]) do
+--     print("recipe-category: " .. key)
+-- end
+-- for key, value in pairs(data.raw["resource-category"]) do
+--     print("resource-category: " .. key)
+-- end
+-- for key, value in pairs(data.raw["module-category"]) do
+--     print("module-category: " .. key)
+-- end
+-- for key, value in pairs(data.raw["equipment-grid"]) do
+--     print("equipment-grid: " .. key)
+-- end
+-- for key, value in pairs(data.raw["equipment-category"]) do
+--     print("equipment-category: " .. key)
+-- end
+-- for key, value in pairs(data.raw["shortcut"]) do
+--     print("shortcut: " .. key)
+-- end
+-- for key, value in pairs(data.raw["trigger-target-type"]) do
+--     print("trigger-target-type: " .. key)
+-- end
+-- for key, value in pairs(data.raw["projectile"]) do
+--     print("projectile: " .. key)
+-- end
+-- for key, value in pairs(data.raw["artillery-projectile"]) do
+--     print("artillery-projectile: " .. key)
+-- end
+-- for key, value in pairs(data.raw["beam"]) do
+--     print("beam: " .. key)
+-- end
+-- for key, value in pairs(data.raw["technology"]) do
+--     print("technology: " .. key)
+-- end
+-- for key, value in pairs(data.raw["tips-and-tricks-item"]) do
+--     print("tips-and-tricks-item: " .. key)
+-- end
+-- for key, value in pairs(data.raw["tips-and-tricks-item-category"]) do
+--     print("tips-and-tricks-item-category: " .. key)
+-- end
+-- for key, value in pairs(data.raw["combat-robot-count"]) do
+--     print("combat-robot-count: " .. key)
+-- end
+-- for key, value in pairs(data.raw["fluid-turret"]) do
+--     print("fluid-turret: " .. key)
+-- end
+-- for key, value in pairs(data.raw["arithmetic-combinator"]) do
+--     print("arithmetic-combinator: " .. key)
+-- end
+-- for key, value in pairs(data.raw["decider-combinator"]) do
+--     print("decider-combinator: " .. key)
+-- end
+-- for key, value in pairs(data.raw["constant-combinator"]) do
+--     print("constant-combinator: " .. key)
+-- end
+-- for key, value in pairs(data.raw["programmable-speaker"]) do
+--     print("programmable-speaker: " .. key)
+-- end
+-- for key, value in pairs(data.raw["power-switch"]) do
+--     print("power-switch: " .. key)
+-- end

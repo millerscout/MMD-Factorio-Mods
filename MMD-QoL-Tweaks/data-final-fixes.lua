@@ -1,6 +1,3 @@
-for key, value in pairs(mods) do print(key) end
---for key, value in pairs(data.raw.technology) do print(key) end
-
 if mods["Krastorio2"] then
     if data.raw.recipe["kr-greenhouse"] then data.raw.recipe["kr-greenhouse"].hidden = true end
     if data.raw.recipe["kr-vc-greenhouse-rampant-industry"] then data.raw.recipe["kr-vc-greenhouse-rampant-industry"].hidden = true end

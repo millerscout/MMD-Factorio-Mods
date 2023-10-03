@@ -1,0 +1,16 @@
+{
+  "name": "level-every-building",
+  "title": "Level for every building",
+  "version": "0.0.1",
+  "author": "millerscout",
+  "homepage": "https://github.com/millerscout",
+  "description": "Every Building will level up",
+  "factorio_version": "1.1",
+  "dependencies": [
+    "base >= 1.1",
+    "(?) space-exploration-postprocess",
+    "(?) angelsrefining",
+    "(?) angelsbioprocessing",
+    "? Bio Industries"
+  ]
+}
