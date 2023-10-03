@@ -6,6 +6,8 @@ function factory_levels.update_machine_speed(machine, level, speed_multiplier)
 			machine.crafting_speed = machine.crafting_speed + level * speed_multiplier
 		elseif machine.mining_speed ~= nil then
 			machine.mining_speed = machine.mining_speed + level * speed_multiplier
+		elseif machine.researching_speed ~= nil then
+			machine.researching_speed = machine.researching_speed + level * speed_multiplier
 		end
 	end
 end

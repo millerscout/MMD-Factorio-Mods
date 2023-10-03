@@ -1,4 +1,4 @@
-local ReferenceBuildings = require("__" .. "level-every-building".. "__.mmddata")()
+local ReferenceBuildings = require("__" .. "level-every-building" .. "__.mmddata")()
 
 function getUniqueCategory(proto)
     category = ""
@@ -6,7 +6,7 @@ function getUniqueCategory(proto)
     for i, name in pairs(proto.crafting_categories) do
         category = category .. "_" .. name
     end
-    return category.."_"
+    return category .. "_"
 end
 
 function has_value(tab, val)
@@ -25,7 +25,9 @@ function DetermineAndSetPollutionValues(tab, value)
 
     for i = 1, #value do
         local c = value:sub(i, i)
-        if type(tonumber(c)) == "number" then
+        if c == "." then
+            numberValue = numberValue .. c
+        elseif type(tonumber(c)) == "number" then
             numberValue = numberValue .. c
         else
             Unit = Unit .. c
@@ -87,8 +89,8 @@ end
 function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
     if proto.name == "bi-arboretum" then
-		return
-	end
+        return
+    end
     category = getUniqueCategory(proto)
     if ReferenceBuildings.types[category] == nil then
         ReferenceBuildings.types[category] = {
@@ -116,6 +118,8 @@ function CalculateTierAndSetReferences(proto)
         table.insert(ReferenceBuildings.types[category].base_speeds, proto["crafting_speed"])
     elseif proto["mining_speed"] ~= nil then
         table.insert(ReferenceBuildings.types[category].base_speeds, proto["mining_speed"])
+    elseif proto["researching_speed"] ~= nil then
+        table.insert(ReferenceBuildings.types[category].base_speeds, proto["researching_speed"])
     end
     DetermineAndSetPollutionValues(ReferenceBuildings.types[category], proto.energy_usage)
     if proto.energy_source == nil or proto.energy_source.emissions_per_minute == nil then
@@ -123,7 +127,7 @@ function CalculateTierAndSetReferences(proto)
     else
         table.insert(ReferenceBuildings.types[category].base_pollution, proto.energy_source.emissions_per_minute)
     end
-    
+
     if proto.productivity_bonus == nil then
         productivity_bonus = 0
     else

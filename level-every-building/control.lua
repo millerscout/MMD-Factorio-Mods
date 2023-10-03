@@ -1,28 +1,95 @@
 require("util")
+function getCount(entity)
+	if entity.type == "lab" then
+		return global.built_machines[entity.unit_number].research_count
+	elseif entity.type == "mining-drill" then
+		sera = entity.surface.get_resource_counts()
+		-- //mining_drill_radius
+
+		a = entity.surface.find_entities_filtered { area = { { entity.position.x, entity.position.y },
+			{ entity.tile_width + entity.position.x, entity.tile_height + entity.position.y } }, type = "resource" }
+		print(#a)
+		return global.built_machines[entity.unit_number].mining_count
+	else
+		return entity.products_finished
+	end
+end
+
+function setCount(unit_number, count, name)
+	global.built_machines[unit_number][name] = count
+end
+
+function updateCount(old_unit_number, new_unit_number, name)
+	count = 0
+	if global.built_machines[old_unit_number] ~= nil and global.built_machines[old_unit_number][name] ~= nil then
+		count = global.built_machines[old_unit_number][name]
+	end
+	global.built_machines[new_unit_number][name] = count
+end
+
+function setStoreCount(tab, count)
+	table.insert(tab, count)
+	table.sort(tab)
+end
+
+function setupMachines()
+	if global.machines == nil then
+		global.machines = {}
+
+		for key, value in pairs(game.entity_prototypes) do
+			print(key)
+
+			rootName, _ = GetRootNameOfMachine(key)
+
+			-- name =
+			if global.machines[rootName] == nil then
+				global.machines[rootName] = {
+					level_name = rootName .. '-level-',
+					max_level = 1
+				}
+			else
+				global.machines[rootName].max_level = global.machines[rootName].max_level + 1
+			end
+		end
+	end
+end
 
 script.on_init(function()
-	global.stored_products_finished_assemblers = { }
-	global.stored_products_finished_furnaces = { }
-	global.ReferenceBuildings = require("__" .. "level-every-building".. "__.mmddata")()
+	global.stored_products_finished_assemblers = {}
+	global.stored_products_finished_furnaces = {}
+	global.stored_research_count = {}
+	global.stored_mining_count = {}
 
+	setupMachines()
 	get_built_machines()
 end)
 
+script.on_load(function()
+	if global.machines == nil then
+		global.reset = true
+		script.on_nth_tick(60, function()
+			setupMachines()
+			get_built_machines()
+		end)
+	end
+end)
 script.on_configuration_changed(function()
 	get_built_machines()
+	global.machines = nil
+	setupMachines()
 end)
 
 function get_built_machines()
 	global.built_machines = global.built_machines or {}
 	for unit_number, machine in pairs(global.built_machines) do
-		-- Remove invalid machines from the global table.
 		if not machine.entity or not machine.entity.valid then
 			global.built_machines[unit_number] = nil
 		end
 	end
 	local built_assemblers = {}
 	for _, surface in pairs(game.surfaces) do
-		local assemblers = surface.find_entities_filtered { type = { "assembling-machine", "furnace" } }
+		local assemblers = surface.find_entities_filtered { type = { "assembling-machine", "furnace", "lab",
+			"mining-drill" } }
 		for _, machine in pairs(assemblers) do
 			if not global.built_machines[machine.unit_number] then
 				global.built_machines[machine.unit_number] = { entity = machine, unit_number = machine.unit_number }
@@ -33,184 +100,27 @@ function get_built_machines()
 	replace_machines(built_assemblers)
 end
 
-script.on_load(function()
-end)
-
-function string_starts_with(str, start)
-	return str:sub(1, #start) == start
+function GetRootNameOfMachine(str, start)
+	if string.find(str, '-level-') then
+		start, _ = string.find(str, '-level-', 1, true)
+		rootName = string.sub(str, 0, start - 1)
+		return rootName, false
+	else
+		return str, true
+	end
 end
-
-machines = {
-	-- Assemblers
-	["assembling-machine-1"] = {
-		name = "assembling-machine-1",
-		level_name = "assembling-machine-1-level-",
-		max_level = 25,
-		next_machine = "assembling-machine-2"
-	},
-	["assembling-machine-2"] = {
-		name = "assembling-machine-2",
-		level_name = "assembling-machine-2-level-",
-		max_level = 50,
-		next_machine = "assembling-machine-3"
-	},
-	["assembling-machine-3"] = {
-		name = "assembling-machine-3",
-		level_name = "assembling-machine-3-level-",
-		max_level = 100
-	},
-
-	-- Smelters
-	["stone-furnace"] = {
-		name = "stone-furnace",
-		level_name = "stone-furnace-level-",
-		max_level = 25,
-		next_machine = "steel-furnace"
-	},
-	["steel-furnace"] = {
-		name = "steel-furnace",
-		level_name = "steel-furnace-level-",
-		max_level = 100
-	},
-	["electric-furnace"] = {
-		name = "electric-furnace",
-		level_name = "electric-furnace-level-",
-		max_level = 100
-	},
-
-	-- refining
-	["chemical-plant"] = {
-		name = "chemical-plant",
-		level_name = "chemical-plant-level-",
-		max_level = 100
-	},
-	["oil-refinery"] = {
-		name = "oil-refinery",
-		level_name = "oil-refinery-level-",
-		max_level = 100
-	},
-	["centrifuge"] = {
-		name = "centrifuge",
-		level_name = "centrifuge-level-",
-		max_level = 100
-	},
-
-	-- Angels Refining
-	["burner-ore-crusher"] = {
-		name = "burner-ore-crusher",
-		level_name = "burner-ore-crusher-level-",
-		max_level = 25,
-		next_machine = "ore-crusher"
-	},
-	["ore-crusher"] = {
-		name = "ore-crusher",
-		level_name = "ore-crusher-level-",
-		max_level = 25,
-		next_machine = "ore-crusher-2"
-	},
-	["ore-crusher-2"] = {
-		name = "ore-crusher-2",
-		level_name = "ore-crusher-2-level-",
-		max_level = 50,
-		next_machine = "ore-crusher-3"
-	},
-	["ore-crusher-3"] = {
-		name = "ore-crusher-3",
-		level_name = "ore-crusher-3-level-",
-		max_level = 100
-	},
-	["liquifier"] = {
-		name = "liquifier",
-		level_name = "liquifier-level-",
-		max_level = 25,
-		next_machine = "liquifier-2"
-	},
-	["liquifier-2"] = {
-		name = "liquifier-2",
-		level_name = "liquifier-2-level-",
-		max_level = 25,
-		next_machine = "liquifier-3"
-	},
-	["liquifier-3"] = {
-		name = "liquifier-3",
-		level_name = "liquifier-3-level-",
-		max_level = 50,
-		next_machine = "liquifier-4"
-	},
-	["liquifier-4"] = {
-		name = "liquifier-4",
-		level_name = "liquifier-4-level-",
-		max_level = 100
-	},
-	["crystallizer"] = {
-		name = "crystallizer",
-		level_name = "crystallizer-level-",
-		max_level = 50,
-		next_machine = "crystallizer-2"
-	},
-	["crystallizer-2"] = {
-		name = "crystallizer-2",
-		level_name = "crystallizer-2-level-",
-		max_level = 100
-	},
-	["angels-electrolyser"] = {
-		name = "angels-electrolyser",
-		level_name = "angels-electrolyser-level-",
-		max_level = 25
-	},
-	["angels-electrolyser-2"] = {
-		name = "angels-electrolyser-2",
-		level_name = "angels-electrolyser-2-level-",
-		max_level = 25
-	},
-	["angels-electrolyser-3"] = {
-		name = "angels-electrolyser-3",
-		level_name = "angels-electrolyser-3-level-",
-		max_level = 25
-	},
-	["angels-electrolyser-4"] = {
-		name = "angels-electrolyser-4",
-		level_name = "angels-electrolyser-4-level-",
-		max_level = 100
-	},
-	["algae-farm"] = {
-		name = "algae-farm",
-		level_name = "algae-farm-level-",
-		max_level = 25
-	},
-	["algae-farm-2"] = {
-		name = "algae-farm-2",
-		level_name = "algae-farm-2-level-",
-		max_level = 25
-	},
-	["algae-farm-3"] = {
-		name = "algae-farm-3",
-		level_name = "algae-farm-3-level-",
-		max_level = 25
-	},
-	["algae-farm-4"] = {
-		name = "algae-farm-4",
-		level_name = "algae-farm-4-level-",
-		max_level = 100
-	}
-}
 
 exponent = settings.global["factory-levels-exponent"].value
 max_level = 1
 function update_machine_levels(overwrite)
 	if overwrite then
-		max_level = 1    -- Just in case another mod cuts the max level of this mods machines to something like 25.
+		max_level = 100 -- Just in case another mod cuts the max level of this mods machines to something like 25.
 		required_items_for_levels = {}
 		exponent = settings.global["factory-levels-exponent"].value
-		for _, machine in pairs(machines) do
-			if max_level < machine.max_level then
-				max_level = machine.max_level
-			end
-		end
 	end
 	for i = 1, (max_level + 1), 1 do -- Adding one more level for machine upgrade to next tier.
 		if required_items_for_levels[i] == nil then
-			table.insert(required_items_for_levels, math.floor(1 + math.pow(i, exponent)))
+			table.insert(required_items_for_levels, math.floor(math.pow(i, exponent)))
 		end
 	end
 end
@@ -220,7 +130,7 @@ remote.add_interface("factory_levels", {
 		if machine.name == nil or machine.level_name == nil or machine.max_level == nil then
 			return false
 		else
-			machines[machine.name] = machine
+			global.machines[machine.name] = machine
 			if machine.max_level > max_level then
 				max_level = machine.max_level
 				update_machine_levels()
@@ -229,32 +139,34 @@ remote.add_interface("factory_levels", {
 		end
 	end,
 	update_machine = function(machine)
-		if machine.name == nil or machines[machine.name] == nil then
+		if machine.name == nil or global.machines[machine.name] == nil then
 			return false
 		else
-			machines[machine.name].level_name = machine.level_name or machines[machine.name].level_name
-			machines[machine.name].max_level = machine.max_level or machines[machine.name].max_level
-			machines[machine.name].next_machine = machine.next_machine or machines[machine.name].next_machine
-			machines[machine.name].disable_mod_setting = machine.disable_mod_setting or machines[machine.name].disable_mod_setting
-			if machines[machine.name].max_level > max_level then
-				max_level = machines[machine.name].max_level
+			global.machines[machine.name].level_name = machine.level_name or global.machines[machine.name].level_name
+			global.machines[machine.name].max_level = machine.max_level or global.machines[machine.name].max_level
+			global.machines[machine.name].next_machine = machine.next_machine or
+				global.machines[machine.name].next_machine
+			global.machines[machine.name].disable_mod_setting = machine.disable_mod_setting or
+				global.machines[machine.name].disable_mod_setting
+			if global.machines[machine.name].max_level > max_level then
+				max_level = global.machines[machine.name].max_level
 				update_machine_levels()
 			end
 			return true
 		end
 	end,
 	remove_machine = function(machine_name)
-		if machine_name == nil or machines[machine_name] == nil then
+		if machine_name == nil or global.machines[machine_name] == nil then
 			return false
 		end
-		machines[machine_name] = nil
+		global.machines[machine_name] = nil
 		return true
 	end,
 	get_machine = function(machine_name)
 		if machine_name == nil then
 			return nil
 		end
-		return machines[machine_name]
+		return global.machines[machine_name]
 	end
 })
 
@@ -265,6 +177,9 @@ update_machine_levels(true)
 
 function determine_level(finished_products_count)
 	local should_have_level = 1
+	if finished_products_count == nil then
+		finished_products_count = 0
+	end
 
 	for level, min_count_required_for_level in pairs(required_items_for_levels) do
 		if finished_products_count >= min_count_required_for_level then
@@ -282,10 +197,10 @@ function determine_machine(entity)
 	if entity == nil or not entity.valid or (entity.type ~= "assembling-machine" and entity.type ~= "furnace") then
 		return nil
 	end
-	for _, machine in pairs(machines) do
-		if entity.name == machine.name or string_starts_with(entity.name, machine.level_name) then
-			return machine
-		end
+	rootName, _ = GetRootNameOfMachine(entity.name, machine.level_name)
+	machine = global.machines[rootName]
+	if machine then
+		return machine
 	end
 	return nil
 end
@@ -313,7 +228,9 @@ function insert_inventory_contents(inventory, contents)
 end
 
 function upgrade_factory(surface, targetname, sourceentity)
-	local finished_products_count = sourceentity.products_finished
+	if sourceentity.valid == false then return end
+	finished_products_count = getCount(sourceentity)
+
 	local box = sourceentity.bounding_box
 	local item_requests = nil
 	local recipe = nil
@@ -347,29 +264,40 @@ function upgrade_factory(surface, targetname, sourceentity)
 		-- Recipe should survive, but why take that chance.
 		recipe = sourceentity.get_recipe()
 	end
-
+	-- direction not working (Bug? bug to bi-bio)
 	local created = surface.create_entity { name = targetname,
-											source = sourceentity,
-											direction = sourceentity.direction,
-											raise_built = true,
-											fast_replace = true,
-											spill = false,
-											create_build_effect_smoke = false,
-											position = sourceentity.position,
-											force = sourceentity.force }
+		source = sourceentity,
+		direction = sourceentity.direction,
+		orientation = sourceentity.orientation,
+		raise_built = true,
+		fast_replace = true,
+		spill = false,
+		create_build_effect_smoke = false,
+		position = sourceentity.position,
+		force = sourceentity.force }
 
 	global.built_machines[created.unit_number] = { entity = created, unit_number = created.unit_number }
 	if item_requests then
-		surface.create_entity({ name = "item-request-proxy",
-								position = created.position,
-								force = created.force,
-								target = created,
-								modules = item_requests })
+		surface.create_entity({
+			name = "item-request-proxy",
+			position = created.position,
+			force = created.force,
+			target = created,
+			modules = item_requests
+		})
 	end
 
+
+
+	if sourceentity.type == "lab" then
+		updateCount(sourceentity.unit_number, created.unit_number, "research_count")
+	elseif sourceentity.type == "mining-drill" then
+		updateCount(sourceentity.unit_number, created.unit_number, "mining_count")
+	else
+		created.products_finished = finished_products_count;
+	end
 	sourceentity.destroy()
 
-	created.products_finished = finished_products_count;
 	if created.type == "assembling-machine" and recipe ~= nil then
 		created.set_recipe(recipe)
 	end
@@ -393,29 +321,33 @@ function upgrade_factory(surface, targetname, sourceentity)
 end
 
 function replace_machines(entities)
-	for _, entity in pairs(entities) do
-		local should_have_level = determine_level(entity.products_finished)
-		
-		for _, machine in pairs(machines) do
-			if (entity.name == machine.name and entity.products_finished > 0) then
-				if not settings.global["factory-levels-disable-mod"].value then
-					if not machine.disable_mod_setting or not settings.global[machine.disable_mod_setting].value then
-						upgrade_factory(entity.surface, machine.level_name .. math.min(should_have_level, machine.max_level), entity)
+	if global.machines ~= nil then
+		for _, entity in pairs(entities) do
+			rootName, isRootAlready = GetRootNameOfMachine(entity.name)
+			machine = global.machines[rootName]
+			if machine ~= nil and entity ~= nil then
+				count = getCount(entity)
+				should_have_level = determine_level(count)
+
+				if isRootAlready then
+					upgrade_factory(entity.surface, machine.level_name .. math.min(should_have_level, machine.max_level),
+						entity)
+				elseif machine ~= nil then
+					local current_level = tonumber(string.match(entity.name, "%d+$"))
+					if current_level == nil then current_level = 1 end
+					if (settings.global["factory-levels-disable-mod"].value) or (machine.disable_mod_setting and settings.global[machine.disable_mod_setting].value) then
+						upgrade_factory(entity.surface, rootName, entity)
+						break
+					elseif (should_have_level > current_level and current_level < machine.max_level) then
+						upgrade_factory(entity.surface,
+							machine.level_name .. math.min(should_have_level, machine.max_level),
+							entity)
+						break
+					elseif (should_have_level > current_level and current_level >= machine.max_level and machine.next_machine ~= nil) then
+						local created = upgrade_factory(entity.surface, machine.next_machine, entity)
+						created.products_finished = 0
+						break
 					end
-				end
-				break
-			elseif string_starts_with(entity.name, machine.level_name) then
-				local current_level = tonumber(string.match(entity.name, "%d+$"))
-				if (settings.global["factory-levels-disable-mod"].value) or (machine.disable_mod_setting and settings.global[machine.disable_mod_setting].value) then
-					upgrade_factory(entity.surface, machine.name, entity)
-					break
-				elseif (should_have_level > current_level and current_level < machine.max_level) then
-					upgrade_factory(entity.surface, machine.level_name .. math.min(should_have_level, machine.max_level), entity)
-					break
-				elseif (should_have_level > current_level and current_level >= machine.max_level and machine.next_machine ~= nil) then
-					local created = upgrade_factory(entity.surface, machine.next_machine, entity)
-					created.products_finished = 0
-					break
 				end
 			end
 		end
@@ -430,8 +362,6 @@ function get_next_machine()
 end
 
 script.on_nth_tick(6, function(event)
-
-
 	local assemblers = {}
 	for i = 1, 100 do
 		get_next_machine()
@@ -452,47 +382,72 @@ script.on_nth_tick(6, function(event)
 end)
 
 function on_mined_entity(event)
-	if (event.entity ~= nil and event.entity.products_finished ~= nil and event.entity.products_finished > 0) then
-		global.built_machines[event.entity.unit_number] = nil
+	if (event.entity ~= nil) then
 		if event.entity.type == "furnace" then
-			table.insert(global.stored_products_finished_furnaces, event.entity.products_finished)
-			table.sort(global.stored_products_finished_furnaces)
+			if event.entity.products_finished ~= nil and event.entity.products_finished > 0 then
+				setStoreCount(global.stored_products_finished_furnaces, event.entity.products_finished)
+			end
+		elseif event.entity.type == "assembling-machine" then
+			if event.entity.products_finished ~= nil and event.entity.products_finished > 0 then
+				setStoreCount(global.stored_products_finished_assemblers, event.entity.products_finished)
+			end
+		elseif event.entity.type == "lab" then
+			count = global.built_machines[event.entity.unit_number].research_count
+			if count ~= nil and count > 0 then
+				setStoreCount(global.stored_research_count, event.entity.products_finished)
+			end
+		elseif event.entity.type == "mining-drill" then
+			count = global.built_machines[event.entity.unit_number].mining_count
+			if count ~= nil and count > 0 then
+				setStoreCount(global.stored_mining_count, count)
+			end
 		end
-
-		if event.entity.type == "assembling-machine" then
-			table.insert(global.stored_products_finished_assemblers, event.entity.products_finished)
-			table.sort(global.stored_products_finished_assemblers)
-		end
+		global.built_machines[event.entity.unit_number] = nil
 	end
 end
 
 script.on_event(
-		defines.events.on_player_mined_entity,
-		on_mined_entity,
-		{ { filter = "type", type = "assembling-machine" },
-		  { filter = "type", type = "furnace" } })
+	defines.events.on_player_mined_entity,
+	on_mined_entity,
+	{
+		{ filter = "type", type = "assembling-machine" },
+		{ filter = "type", type = "furnace" },
+		{ filter = "type", type = "lab" },
+		{ filter = "type", type = "mining-drill" },
+	})
 
 script.on_event(
-		defines.events.on_robot_mined_entity,
-		on_mined_entity,
-		{ { filter = "type", type = "assembling-machine" },
-		  { filter = "type", type = "furnace" } })
+	defines.events.on_robot_mined_entity,
+	on_mined_entity,
+	{
+		{ filter = "type", type = "assembling-machine" },
+		{ filter = "type", type = "furnace" },
+		{ filter = "type", type = "lab" },
+		{ filter = "type", type = "mining-drill" },
+	})
 
 function replace_built_entity(entity, finished_product_count)
 	global.built_machines[entity.unit_number] = { entity = entity, unit_number = entity.unit_number }
 	local machine = determine_machine(entity)
 	if finished_product_count ~= nil then
 		local should_have_level = determine_level(finished_product_count)
-		entity.products_finished = finished_product_count
+		if entity.type == "lab" then
+			setCount(entity.unit_number, finished_product_count, "research_count")
+		elseif entity.type == "mining-drill" then
+			setCount(entity.unit_number, finished_product_count, "mining_count")
+		else
+			entity.products_finished = finished_product_count
+		end
 
-		local created_entity_name = entity.name
 		if machine ~= nil then
-			local created = upgrade_factory(entity.surface, machine.level_name .. math.min(should_have_level, machine.max_level), entity)
+			local created = upgrade_factory(entity.surface,
+				machine.level_name .. math.min(should_have_level, machine.max_level), entity)
 			created.products_finished = finished_product_count
 		end
 	else
-		if machine ~= nil and machine.name ~= entity.name then
-			upgrade_factory(entity.surface, machine.name, entity)
+		if machine ~= nil ~= entity.name then
+			rootName, _ = GetRootNameOfMachine(entity.name)
+			upgrade_factory(entity.surface, rootName, entity)
 		end
 	end
 end
@@ -502,11 +457,17 @@ function on_built_entity(event)
 		local finished_product_count = table.remove(global.stored_products_finished_assemblers)
 		replace_built_entity(event.created_entity, finished_product_count)
 		return
-	end
-
-	if (event.created_entity ~= nil and event.created_entity.type == "furnace") then
+	elseif (event.created_entity ~= nil and event.created_entity.type == "furnace") then
 		local finished_product_count = table.remove(global.stored_products_finished_furnaces)
 		replace_built_entity(event.created_entity, finished_product_count)
+		return
+	elseif (event.created_entity ~= nil and event.created_entity.type == "lab") then
+		local finished_product_count = table.remove(global.stored_research_count)
+		replace_built_entity(event.created_entity, finished_product_count)
+		return
+	elseif (event.created_entity ~= nil and event.created_entity.type == "mining-drill") then
+		local finished_product_count = table.remove(global.stored_mining_count)
+		replace_built_entity(event.createdentity, finished_product_count)
 		return
 	end
 end
@@ -531,7 +492,7 @@ function on_runtime_mod_setting_changed(event)
 		end
 	else
 		update_machines = false
-		for machine_name, machine in pairs(machines) do
+		for machine_name, machine in pairs(global.machines) do
 			if event.setting == machine.disable_mod_setting then
 				update_machines = true
 			end
@@ -543,17 +504,40 @@ function on_runtime_mod_setting_changed(event)
 end
 
 script.on_event(
-		defines.events.on_robot_built_entity,
-		on_built_entity,
-		{ { filter = "type", type = "assembling-machine" },
-		  { filter = "type", type = "furnace" } })
+	defines.events.on_research_finished,
+	function(data)
+		for _, machine in pairs(global.built_machines) do
+			if machine.entity.type == "lab" then
+				if machine.research_count == nil then
+					machine.research_count = data.research.research_unit_count
+				else
+					machine.research_count = machine.research_count + data.research.research_unit_count
+				end
+			end
+		end
+	end
+)
 
 script.on_event(
-		defines.events.on_built_entity,
-		on_built_entity,
-		{ { filter = "type", type = "assembling-machine" },
-		  { filter = "type", type = "furnace" } })
+	defines.events.on_robot_built_entity,
+	on_built_entity,
+	{
+		{ filter = "type", type = "assembling-machine" },
+		{ filter = "type", type = "furnace" },
+		{ filter = "type", type = "lab" },
+		{ filter = "type", type = "mining-drill" }
+	})
 
 script.on_event(
-		defines.events.on_runtime_mod_setting_changed,
-		on_runtime_mod_setting_changed)
+	defines.events.on_built_entity,
+	on_built_entity,
+	{
+		{ filter = "type", type = "assembling-machine" },
+		{ filter = "type", type = "furnace" },
+		{ filter = "type", type = "lab" },
+		{ filter = "type", type = "mining-drill" },
+	})
+
+script.on_event(
+	defines.events.on_runtime_mod_setting_changed,
+	on_runtime_mod_setting_changed)
