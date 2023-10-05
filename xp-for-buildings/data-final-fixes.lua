@@ -38,7 +38,10 @@ end
 -- for key, value in pairs(data.raw["resource"]) do
 --     print("resource: " .. key)
 -- end
-
+for key, value in pairs(data.raw["ammo-turret"]) do
+    --data.raw["ammo-turret"][key]["mining_speed"] = data.raw["ammo-turret"][key]["mining_speed"] / 3
+    CalculateTierAndSetReferences(data.raw["ammo-turret"][key])
+end
 for _, value in pairs(ReferenceBuildings.types) do
     Calculate(value)
     factory_levels.create_leveled_machines(value)

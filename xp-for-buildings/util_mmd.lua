@@ -22,7 +22,7 @@ end
 function DetermineAndSetPollutionValues(tab, value)
     numberValue = ""
     Unit = ""
-
+    if value == nil then return end
     for i = 1, #value do
         local c = value:sub(i, i)
         if c == "." then

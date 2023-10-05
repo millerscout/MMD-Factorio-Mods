@@ -1,4 +1,20 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.7
+Date: 2022-10-05
+  - Optimize how levels are detected
+  - fixed bug when loading entities from other versions
+  - changing versions should correct values
+  - optimize script to 1/10 of lua spent time.
+---------------------------------------------------------------------------------------------------
+Version: 0.0.6
+Date: 2022-10-03
+  - Optimization started (not completed yet)
+  - support for ammo-turrets
+    - increase damage
+    - health
+    - range
+    - decrease cooldown
+---------------------------------------------------------------------------------------------------
 Version: 0.0.5
 Date: 2022-10-03
   Added thumbnail
