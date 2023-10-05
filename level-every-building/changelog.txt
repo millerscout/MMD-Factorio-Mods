@@ -1,6 +1,0 @@
----------------------------------------------------------------------------------------------------
-Version: 0.6.9
-Date: 2022-10-02
-  Bugfix:
-    - Thanks to CaitSith2: Actually look for the external disable-mod-setting within on_runtime_mod_setting_changed.
-    - Fix next level for liquifier

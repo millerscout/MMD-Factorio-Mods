@@ -159,7 +159,7 @@ function factory_levels.create_leveled_machines(machines)
 				end
 
 				if not hidden then
-					--table.insert(machine.flags, "hidden")
+					table.insert(machine.flags, "hidden")
 				end
 
 				machine.minable.result = machines.base_machine_names[tier]
@@ -180,29 +180,6 @@ function factory_levels.create_leveled_machines(machines)
 			factory_levels.update_machine_module_slots(machine, level, machines.levels_per_module_slots[tier],
 				machines.base_module_slots[tier], machines.bonus_module_slots[tier])
 			factory_levels.update_machine_tint(machine, level)
-		end
-	end
-end
-
--- Data final fixes
-function factory_levels.convert_furnace_to_assembling_machines(machines)
-	-- Just in case the base machine was initially "furnace" when the leveled machines were created, but another mod later turned it into "assembling-machine" without
-	-- also converting the leveled machines into "assembling-machines".
-	if machines.type ~= "furnace" then
-		return
-	end
-	for tier = 1, machines.tiers, 1 do
-		base_machine = factory_levels.get_or_create_machine(machines.type, machines.base_machine_names[tier], 0)
-		if base_machine.type == "assembling-machine" then
-			for level = 1, machines.levels[tier], 1 do
-				leveled_machine = factory_levels.get_or_create_machine(machines.type, machines.base_machine_names[tier],
-					level)
-				if leveled_machine.type == "furnace" then
-					data.raw["furnace"][leveled_machine.name] = nil
-					leveled_machine.type = "assembling-machine"
-					data:extend({ leveled_machine })
-				end
-			end
 		end
 	end
 end

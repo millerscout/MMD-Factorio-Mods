@@ -1,4 +1,4 @@
-local ReferenceBuildings = require("__" .. "level-every-building" .. "__.mmddata")()
+local ReferenceBuildings = require("__" .. "xp-for-buildings" .. "__.mmddata")()
 
 function getUniqueCategory(proto)
     category = ""

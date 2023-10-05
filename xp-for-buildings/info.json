@@ -1,0 +1,14 @@
+{
+  "name": "xp-for-buildings",
+  "title": "Experience for Buildings",
+  "version": "0.0.5",
+  "author": "millerscout",
+  "homepage": "https://github.com/millerscout",
+  "description": "building gets xp from working and level up",
+  "factorio_version": "1.1",
+  "dependencies": [
+    "base >= 1.1",
+    "? Bio Industries",
+    "! Factory Levels"
+  ]
+}

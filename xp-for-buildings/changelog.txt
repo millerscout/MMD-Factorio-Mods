@@ -1,0 +1,28 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.0.5
+Date: 2022-10-03
+  Added thumbnail
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 2022-10-03
+  Feature:
+    - implemented mining_drill exp
+
+---------------------------------------------------------------------------------------------------
+Version: 0.0.2
+Date: 2022-10-03
+  Feature:
+    - major refactor :cherry_blossom:
+    - added dynamically drill, lab assembling-machine and furnaces.
+    - simplified alot of code.
+    - dynamically loads entities
+    - implemented lab level and research speed
+    - mining-drill WIP.
+  Bugfix:
+    - fix double values when using consumption.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Date: 2022-10-01
+  Feature:
+    - Fork from https://mods.factorio.com/mod/factory-levels @sensenmann 
