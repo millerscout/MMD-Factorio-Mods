@@ -1,6 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.9
+Date: 2023-10-05
+  - Fix Major error when some entities from other mods wasn't loadded (Failed to load mods: Error in assignID: Item with name 'entity-name' does not exist) 
+  - Removed part of tiers
+  - added config for most of calculations
+  - fix bug where every entity was level 1 instead of 0
+
+---------------------------------------------------------------------------------------------------
 Version: 0.0.8
-Date: 2022-10-05
+Date: 2023-10-05
   - Added the new exp curve
   - increased how many machines are check in each tick
   - skipped entities that throws error, will check compatibility later.
@@ -8,14 +16,14 @@ Date: 2022-10-05
   - removed configs (for now) 
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.7
-Date: 2022-10-05
+Date: 2023-10-05
   - Optimize how levels are detected
   - fixed bug when loading entities from other versions
   - changing versions should correct values
   - optimize script to 1/10 of lua spent time.
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.6
-Date: 2022-10-03
+Date: 2023-10-03
   - Optimization started (not completed yet)
   - support for ammo-turrets
     - increase damage
@@ -24,17 +32,17 @@ Date: 2022-10-03
     - decrease cooldown
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.5
-Date: 2022-10-03
+Date: 2023-10-03
   Added thumbnail
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.3
-Date: 2022-10-03
+Date: 2023-10-03
   Feature:
     - implemented mining_drill exp
 
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.2
-Date: 2022-10-03
+Date: 2023-10-03
   Feature:
     - major refactor :cherry_blossom:
     - added dynamically drill, lab assembling-machine and furnaces.
@@ -47,6 +55,6 @@ Date: 2022-10-03
 
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.1
-Date: 2022-10-01
+Date: 2023-10-01
   Feature:
     - Fork from https://mods.factorio.com/mod/factory-levels @sensenmann 

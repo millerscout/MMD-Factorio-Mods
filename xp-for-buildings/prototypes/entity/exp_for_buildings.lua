@@ -183,7 +183,7 @@ function buildings.create_leveled_machines(metadata)
 				metadata.speed_multipliers[tier])
 
 			buildings.tryUpdate_machine_energy_usage(machine, level, metadata.base_consumption[tier],
-				metadata.consumption_multipliers[tier], metadata.consumption_unit[tier])
+				metadata.energy_multiplier[tier], metadata.consumption_unit[tier])
 
 			buildings.tryUpdate_machine_pollution(machine, level, metadata.base_pollution[tier],
 				metadata.pollution_multipliers[tier])

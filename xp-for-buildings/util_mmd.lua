@@ -1,12 +1,17 @@
 local ReferenceBuildings = require("__" .. "xp-for-buildings" .. "__.mmddata")()
 
-function getUniqueCategory(proto)
-    category = ""
-    if proto.crafting_categories == nil then return proto.type end
-    for i, name in pairs(proto.crafting_categories) do
-        category = category .. "_" .. name
-    end
-    return category .. "_"
+local speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
+local energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
+local pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
+local productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
+
+
+
+
+
+
+function getUniqueId(proto)
+    return proto.type .. "_" .. proto.name
 end
 
 function has_value(tab, val)
@@ -37,7 +42,7 @@ function DetermineAndSetPollutionValues(tab, value)
     table.insert(tab.consumption_unit, Unit)
 end
 
-function CalculateTierAndSet(tab)
+function SetLevels(tab)
     qtd = #tab.base_machine_names
     maxLevelPerTier = 100 / qtd
     tab.tiers = qtd
@@ -46,7 +51,7 @@ function CalculateTierAndSet(tab)
     end
 end
 
-function CalculateModulesAndSet(tab)
+function SetModules(tab)
     qtd = #tab.base_machine_names
     tab.tiers = qtd
     levels_per_module_slots = { 20, 25, 30 }
@@ -62,50 +67,37 @@ function CalculateModulesAndSet(tab)
     end
 end
 
-function CalculatePolutionMultiplierAndSet(tab)
-    base_multiplier = 0.2
+function SetEnergy(tab)
     nextVal = 0
     for i = 1, #tab.base_machine_names, 1 do
-        nextVal = nextVal + base_multiplier * i;
-        table.insert(tab.consumption_multipliers, nextVal)
+        nextVal = nextVal + energy_multiplier * i;
+        table.insert(tab.energy_multiplier, nextVal)
     end
 end
 
-function CalculateMultipliersAndSet(tab)
-    base_multiplier = 0.2
-
+function SetSpeedMultipliers(tab)
     for i = 1, #tab.base_machine_names, 1 do
-        table.insert(tab.speed_multipliers, base_multiplier * i)
+        table.insert(tab.speed_multipliers, speed_multiplier * i)
     end
 end
 
 function Calculate(tab)
-    CalculateTierAndSet(tab)
-    CalculateMultipliersAndSet(tab)
-    CalculateModulesAndSet(tab)
-    CalculatePolutionMultiplierAndSet(tab)
+    SetLevels(tab)
+    SetSpeedMultipliers(tab)
+    SetModules(tab)
+    SetEnergy(tab)
 end
-
-local ignoredEntities = {
-    ["bi-arboretum"] = 0,
-    ["rocket-ammo-turret-rampant-arsenal"] = 0,
-    ["rapid-rocket-ammo-turret-rampant-arsenal"] = 0,
-    ["cannon-ammo-turret-rampant-arsenal"] = 0,
-    ["rapid-cannon-ammo-turret-rampant-arsenal"] = 0,
-    ["shotgun-ammo-turret-rampant-arsenal"] = 0,
-    ["gun-ammo-turret-rampant-arsenal"] = 0,
-    ["medic-ammo-turret-rampant-arsenal"] = 0,
-    ["capsule-ammo-turret-rampant-arsenal"] = 0,
-}
 
 function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
-    if ignoredEntities[proto.name] ~= nil then
+    if data.raw.item[proto.name] == nil then
+        print("check" .. proto.name)
         return
     end
-    category = getUniqueCategory(proto)
-    if ReferenceBuildings.types[category] == nil then
-        ReferenceBuildings.types[category] = {
+
+    uniqueId = getUniqueId(proto)
+    if ReferenceBuildings.types[uniqueId] == nil then
+        ReferenceBuildings.types[uniqueId] = {
             type = proto.type,
             tiers = 0,
             base_machine_names = {},
@@ -113,7 +105,7 @@ function CalculateTierAndSetReferences(proto)
             base_speeds = {},
             speed_multipliers = {},
             base_consumption = {},
-            consumption_multipliers = {},
+            energy_multiplier = {},
             consumption_unit = {},
             base_pollution = {},
             pollution_multipliers = {},
@@ -125,19 +117,19 @@ function CalculateTierAndSetReferences(proto)
         }
     end
 
-    table.insert(ReferenceBuildings.types[category].base_machine_names, proto.name)
+    table.insert(ReferenceBuildings.types[uniqueId].base_machine_names, proto.name)
     if proto["crafting_speed"] ~= nil then
-        table.insert(ReferenceBuildings.types[category].base_speeds, proto["crafting_speed"])
+        table.insert(ReferenceBuildings.types[uniqueId].base_speeds, proto["crafting_speed"])
     elseif proto["mining_speed"] ~= nil then
-        table.insert(ReferenceBuildings.types[category].base_speeds, proto["mining_speed"])
+        table.insert(ReferenceBuildings.types[uniqueId].base_speeds, proto["mining_speed"])
     elseif proto["researching_speed"] ~= nil then
-        table.insert(ReferenceBuildings.types[category].base_speeds, proto["researching_speed"])
+        table.insert(ReferenceBuildings.types[uniqueId].base_speeds, proto["researching_speed"])
     end
-    DetermineAndSetPollutionValues(ReferenceBuildings.types[category], proto.energy_usage)
+    DetermineAndSetPollutionValues(ReferenceBuildings.types[uniqueId], proto.energy_usage)
     if proto.energy_source == nil or proto.energy_source.emissions_per_minute == nil then
-        table.insert(ReferenceBuildings.types[category].base_pollution, 0)
+        table.insert(ReferenceBuildings.types[uniqueId].base_pollution, 0)
     else
-        table.insert(ReferenceBuildings.types[category].base_pollution, proto.energy_source.emissions_per_minute)
+        table.insert(ReferenceBuildings.types[uniqueId].base_pollution, proto.energy_source.emissions_per_minute)
     end
 
     if proto.productivity_bonus == nil then
@@ -145,14 +137,14 @@ function CalculateTierAndSetReferences(proto)
     else
         productivity_bonus = proto.productivity_bonus
     end
-    table.insert(ReferenceBuildings.types[category].base_productivity, productivity_bonus)
-    table.insert(ReferenceBuildings.types[category].pollution_multipliers, 0.04)      ---TODO: calculate it properly
-    table.insert(ReferenceBuildings.types[category].productivity_multipliers, 0.0025) ---TODO: calculate it properly
+    table.insert(ReferenceBuildings.types[uniqueId].base_productivity, productivity_bonus)
+    table.insert(ReferenceBuildings.types[uniqueId].pollution_multipliers, pollution_multiplier)
+    table.insert(ReferenceBuildings.types[uniqueId].productivity_multipliers, productivity_multipliers)
 
     if proto.module_specification == nil or proto.module_specification.module_slots == nil then
-        table.insert(ReferenceBuildings.types[category].base_module_slots, 0)
+        table.insert(ReferenceBuildings.types[uniqueId].base_module_slots, 0)
     else
-        table.insert(ReferenceBuildings.types[category].base_module_slots,
+        table.insert(ReferenceBuildings.types[uniqueId].base_module_slots,
             proto.module_specification.module_slots)
     end
 end

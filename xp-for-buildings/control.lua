@@ -385,7 +385,7 @@ function replace_machines(entities)
 				xpCount = getCount(entity)
 				should_have_level = determine_level(metadata, xpCount)
 
-				if machine ~= nil then
+				if machine ~= nil and should_have_level > 0 then
 					if metadata.level ~= should_have_level then
 						if (should_have_level > metadata.level and metadata.level < machine.max_level) then
 							created = upgrade_factory(entity.surface,
@@ -492,9 +492,10 @@ function replace_built_entity(entity, count)
 		else
 			entity.products_finished = count
 		end
-
-		local created = upgrade_factory(entity.surface,
-			machine.level_name .. math.min(should_have_level, machine.max_level), entity)
+		if should_have_level > 0 then
+			local created = upgrade_factory(entity.surface,
+				machine.level_name .. math.min(should_have_level, machine.max_level), entity)
+		end
 	else
 		upgrade_factory(entity.surface, entity.name, entity)
 	end
