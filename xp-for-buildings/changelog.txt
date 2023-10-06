@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.10
+Date: 2023-10-06
+  - Balance default values
+  - fixed not updating exp tables
+  - added new triggers to reset exp tables
+  - added exp feedback for mining-drill and lab
+  - 
+  
+---------------------------------------------------------------------------------------------------
 Version: 0.0.9
 Date: 2023-10-05
   - Fix Major error when some entities from other mods wasn't loadded (Failed to load mods: Error in assignID: Item with name 'entity-name' does not exist) 

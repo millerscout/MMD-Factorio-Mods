@@ -165,11 +165,13 @@ function update_machine_levels(overwrite)
 	local multiplier = settings.global["exp_for_buildings-multiplier"].value
 	local divisor = settings.global["exp_for_buildings-divisor"].value
 
-	lastExp = baseExp
+	local lastExp = 0
 	for i = 1, (max_level), 1 do
+		lastExp = lastExp + baseExp * multiplier * i / divisor
 		if xpCountRequiredForLevel[i] == nil then
-			lastExp = lastExp + baseExp * multiplier * i / divisor
 			table.insert(xpCountRequiredForLevel, lastExp)
+		elseif overwrite then
+			xpCountRequiredForLevel[i] = lastExp
 		end
 	end
 end
@@ -526,22 +528,23 @@ function on_built_entity(event)
 end
 
 function on_runtime_mod_setting_changed(event)
-	if event.setting == "factory-levels-disable-mod" then
-		-- Refresh EVERY machine immediately.  User potentially wishes to remove this mod or some other mod that depends on this mod.
-		get_built_machines()
-	elseif event.setting == "factory-levels-exponent" then
+	if event.setting == "exp_for_buildings-baseExp" or event.setting == "exp_for_buildings-multiplier" or
+		event.setting == "exp_for_buildings-divisor" then
 		update_machine_levels(true)
+		if xpCountRequiredForLevel[1] then
+			game.print("Exp for Level 1: " .. xpCountRequiredForLevel[1])
+		end
 		if xpCountRequiredForLevel[25] then
-			game.print("Crafts for Level 25: " .. xpCountRequiredForLevel[25])
+			game.print("Exp for Level 25: " .. xpCountRequiredForLevel[25])
 		end
 		if xpCountRequiredForLevel[50] then
-			game.print("Crafts for Level 50: " .. xpCountRequiredForLevel[50])
+			game.print("Exp for Level 50: " .. xpCountRequiredForLevel[50])
 		end
 		if xpCountRequiredForLevel[100] then
-			game.print("Crafts for Level 100: " .. xpCountRequiredForLevel[100])
+			game.print("Exp for Level 100: " .. xpCountRequiredForLevel[100])
 		end
 		if max_level ~= 100 then
-			game.print("Crafts for Max level of " .. max_level .. ": " .. xpCountRequiredForLevel[max_level])
+			game.print("Exp for Max level of " .. max_level .. ": " .. xpCountRequiredForLevel[max_level])
 		end
 	else
 		update_machines = false
@@ -581,6 +584,20 @@ script.on_event(
 	on_built_entity,
 	filters)
 
+script.on_event(defines.events.on_gui_closed, function(event)
+	if event.entity ~= nil then
+		metadata = global.built_machines[event.entity.unit_number]
+		if metadata ~= nil then
+			if event.entity.type == "lab" and metadata.research_count ~= nil then
+				event.entity.surface.create_entity { name = "flying-text", position = event.entity.position, text =
+					metadata.research_count .. "xp" }
+			elseif event.entity.type == "mining-drill" and metadata.mining_count ~=nil then
+				event.entity.surface.create_entity { name = "flying-text", position = event.entity.position, text =
+					metadata.mining_count .. "xp" }
+			end
+		end
+	end
+end)
 script.on_event(
 	defines.events.on_runtime_mod_setting_changed,
 	on_runtime_mod_setting_changed)
