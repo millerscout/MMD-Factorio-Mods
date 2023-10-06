@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.8
+Date: 2022-10-05
+  - Added the new exp curve
+  - increased how many machines are check in each tick
+  - skipped entities that throws error, will check compatibility later.
+  - fix not miniable entities
+  - removed configs (for now) 
+---------------------------------------------------------------------------------------------------
 Version: 0.0.7
 Date: 2022-10-05
   - Optimize how levels are detected

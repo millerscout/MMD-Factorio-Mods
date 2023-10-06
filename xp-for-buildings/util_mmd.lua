@@ -86,9 +86,21 @@ function Calculate(tab)
     CalculatePolutionMultiplierAndSet(tab)
 end
 
+local ignoredEntities = {
+    ["bi-arboretum"] = 0,
+    ["rocket-ammo-turret-rampant-arsenal"] = 0,
+    ["rapid-rocket-ammo-turret-rampant-arsenal"] = 0,
+    ["cannon-ammo-turret-rampant-arsenal"] = 0,
+    ["rapid-cannon-ammo-turret-rampant-arsenal"] = 0,
+    ["shotgun-ammo-turret-rampant-arsenal"] = 0,
+    ["gun-ammo-turret-rampant-arsenal"] = 0,
+    ["medic-ammo-turret-rampant-arsenal"] = 0,
+    ["capsule-ammo-turret-rampant-arsenal"] = 0,
+}
+
 function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
-    if proto.name == "bi-arboretum" then
+    if ignoredEntities[proto.name] ~= nil then
         return
     end
     category = getUniqueCategory(proto)

@@ -1,30 +1,24 @@
 local buildings = {}
 
 function buildings.tryUpdate_machine_speed(machine, level, speed_multiplier)
-	if (settings.startup["factory-levels-enable-speed-bonus"].value) then
-		if machine.crafting_speed ~= nil then
-			machine.crafting_speed = machine.crafting_speed + level * speed_multiplier
-		elseif machine.mining_speed ~= nil then
-			machine.mining_speed = machine.mining_speed + level * speed_multiplier
-		elseif machine.researching_speed ~= nil then
-			machine.researching_speed = machine.researching_speed + level * speed_multiplier
-		end
+	if machine.crafting_speed ~= nil then
+		machine.crafting_speed = machine.crafting_speed + level * speed_multiplier
+	elseif machine.mining_speed ~= nil then
+		machine.mining_speed = machine.mining_speed + level * speed_multiplier
+	elseif machine.researching_speed ~= nil then
+		machine.researching_speed = machine.researching_speed + level * speed_multiplier
 	end
 end
 
 function buildings.tryUpdate_machine_energy_usage(machine, level, base_usage, usage_multiplier, energy_unit)
-	if (settings.startup["factory-levels-enable-energy-usage"].value) then
-		if machine.energy_usage ~= nil then
-			machine.energy_usage = (base_usage + usage_multiplier * level) .. energy_unit
-		end
+	if machine.energy_usage ~= nil then
+		machine.energy_usage = (base_usage + usage_multiplier * level) .. energy_unit
 	end
 end
 
 function buildings.tryUpdate_machine_pollution(machine, level, base_emission, emission_multiplier)
-	if (settings.startup["factory-levels-enable-emissions"].value) then
-		if machine.energy_source ~= nil then
-			machine.energy_source.emissions_per_minute = base_emission + emission_multiplier * level
-		end
+	if machine.energy_source ~= nil then
+		machine.energy_source.emissions_per_minute = base_emission + emission_multiplier * level
 	end
 end
 
@@ -43,19 +37,15 @@ function buildings.Try_update_weaponParams(machine, level)
 end
 
 function buildings.Try_update_machine_productivity(machine, level, base_productivity, productivity_multiplier)
-	if (settings.startup["factory-levels-enable-productivity-bonus"].value) then
 		machine.base_productivity = base_productivity + productivity_multiplier * level
-	end
 end
 
 function buildings.Try_update_machine_module_slots(machine, level, levels_per_module_slot, base_module_slots,
 												   module_slot_bonus)
-	if (settings.startup["factory-levels-enable-module-bonus"].value) then
-		machine.module_specification = {
-			module_slots = base_module_slots + (math.floor(level / levels_per_module_slot) * module_slot_bonus) }
-		if machine.module_specification.module_slots > 0 then
-			machine.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
-		end
+	machine.module_specification = {
+		module_slots = base_module_slots + (math.floor(level / levels_per_module_slot) * module_slot_bonus) }
+	if machine.module_specification.module_slots > 0 then
+		machine.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
 	end
 end
 
@@ -180,9 +170,11 @@ function buildings.create_leveled_machines(metadata)
 					table.insert(machine.flags, "hidden")
 				end
 
-				machine.minable.result = metadata.base_machine_names[tier]
+				if machine.miniable ~= nil then
+					machine.minable.result = metadata.base_machine_names[tier]
+				end
 				machine.placeable_by = { item = metadata.base_machine_names[tier], count = 1 }
-				machine.localised_name = { "entity-name.factory-levels",
+				machine.localised_name = { "entity-name.exp_for_buildings",
 					{ "entity-name." .. metadata.base_machine_names[tier] }, level }
 				machine.localised_description = { "entity-description." .. metadata.base_machine_names[tier] }
 			end
@@ -212,10 +204,6 @@ function buildings.create_leveled_machines(metadata)
 end
 
 function buildings.fix_productivity(machines)
-	if (settings.startup["factory-levels-enable-productivity-bonus"].value == false) then
-		return
-	end
-	--Undo space-explorations hold against machine level productivity.
 	for tier = 1, machines.tiers, 1 do
 		for level = 0, machines.levels[tier], 1 do
 			local machine = buildings.get_or_create_machine(machines.type, machines.base_machine_names[tier], level)

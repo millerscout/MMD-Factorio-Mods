@@ -92,7 +92,7 @@ script.on_load(function()
 		end
 	end
 end)
-script.on_configuration_changed(function ()
+script.on_configuration_changed(function()
 	SetupOnChange()
 end)
 
@@ -159,17 +159,17 @@ function GetRootNameOfMachine(str)
 	end
 end
 
-exponent = settings.global["factory-levels-exponent"].value
-max_level = 1
+max_level = 100
 function update_machine_levels(overwrite)
-	if overwrite then
-		max_level = 100 -- Just in case another mod cuts the max level of this mods machines to something like 25.
-		xpCountRequiredForLevel = {}
-		exponent = settings.global["factory-levels-exponent"].value
-	end
-	for i = 1, (max_level + 1), 1 do -- Adding one more level for machine upgrade to next tier.
+	local baseExp = settings.global["exp_for_buildings-baseExp"].value
+	local multiplier = settings.global["exp_for_buildings-multiplier"].value
+	local divisor = settings.global["exp_for_buildings-divisor"].value
+
+	lastExp = baseExp
+	for i = 1, (max_level), 1 do
 		if xpCountRequiredForLevel[i] == nil then
-			table.insert(xpCountRequiredForLevel, math.floor(math.pow(i, exponent)))
+			lastExp = lastExp + baseExp * multiplier * i / divisor
+			table.insert(xpCountRequiredForLevel, lastExp)
 		end
 	end
 end
@@ -415,7 +415,7 @@ end
 
 script.on_nth_tick(30, function(event)
 	local assemblers = {}
-	for i = 1, 100 do
+	for i = 1, 500 do
 		get_next_machine()
 		if i == 1 and global.current_machine == nil then
 			return
