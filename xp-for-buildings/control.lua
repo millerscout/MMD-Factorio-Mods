@@ -7,18 +7,23 @@ end
 function calculateExpForMining(entity)
 	resources = entity.surface.find_entities_filtered { position = { entity.position.x, entity.position.y }, radius =
 		math.ceil(entity.prototype.mining_drill_radius), type = "resource" }
-	xpCount = 0
+	local resource_count = 0
+	local mining_count = 0
 	for key, value in pairs(resources) do
-		xpCount = xpCount + value.amount
+		resource_count = resource_count + value.amount
+	end
+	if global.built_machines[entity.unit_number].mining_count ~= nil then
+		mining_count = global.built_machines[entity.unit_number].mining_count
 	end
 	if global.built_machines[entity.unit_number].resource_count == nil then
-		global.built_machines[entity.unit_number].resource_count = xpCount
-		return 0
+		global.built_machines[entity.unit_number].resource_count = resource_count
 	else
-		collected = global.built_machines[entity.unit_number].resource_count - xpCount
-		global.built_machines[entity.unit_number].mining_count = collected
-		return collected
+		collected = global.built_machines[entity.unit_number].resource_count - resource_count
+		global.built_machines[entity.unit_number].resource_count = resource_count
+		mining_count = mining_count + collected
 	end
+	global.built_machines[entity.unit_number].mining_count = mining_count
+	return mining_count
 end
 
 function getCount(entity)
@@ -332,7 +337,7 @@ function upgrade_factory(surface, targetname, sourceentity)
 		level = global.built_machines[unit_number].level
 	}
 
-	global.built_machines[unit_number] = nil
+	
 	if item_requests then
 		surface.create_entity({
 			name = "item-request-proxy",
@@ -355,7 +360,7 @@ function upgrade_factory(surface, targetname, sourceentity)
 		created.products_finished = xpCount;
 	end
 	sourceentity.destroy()
-
+	global.built_machines[unit_number] = nil
 	if created.type == "assembling-machine" and recipe ~= nil then
 		created.set_recipe(recipe)
 	end
@@ -591,7 +596,7 @@ script.on_event(defines.events.on_gui_closed, function(event)
 			if event.entity.type == "lab" and metadata.research_count ~= nil then
 				event.entity.surface.create_entity { name = "flying-text", position = event.entity.position, text =
 					metadata.research_count .. "xp" }
-			elseif event.entity.type == "mining-drill" and metadata.mining_count ~=nil then
+			elseif event.entity.type == "mining-drill" and metadata.mining_count ~= nil then
 				event.entity.surface.create_entity { name = "flying-text", position = event.entity.position, text =
 					metadata.mining_count .. "xp" }
 			end

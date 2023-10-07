@@ -1,11 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.11
+Date: 2023-10-07
+  - fix mining calculation (not working properly)
+  - balance values
+  - try fix some errors when verifying lab entities
+  
+---------------------------------------------------------------------------------------------------
 Version: 0.0.10
 Date: 2023-10-06
   - Balance default values
   - fixed not updating exp tables
   - added new triggers to reset exp tables
   - added exp feedback for mining-drill and lab
-  - 
+  - fixed steep first level 
   
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.9

@@ -35,7 +35,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 100,
         setting_type = "startup",
-        default_value = 0.2
+        default_value = 0.05
     },
     {
         type = "double-setting",
@@ -44,7 +44,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 100,
         setting_type = "startup",
-        default_value = 0.2
+        default_value = 0.05
     },
     {
         type = "double-setting",
@@ -53,7 +53,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 100,
         setting_type = "startup",
-        default_value = 0.04
+        default_value = 0.03
     },
     {
         type = "double-setting",
@@ -62,7 +62,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 100,
         setting_type = "startup",
-        default_value = 0.004
+        default_value = 0.01
     },
     {
         type = "double-setting",

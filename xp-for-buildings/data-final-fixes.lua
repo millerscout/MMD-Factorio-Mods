@@ -2,7 +2,7 @@ require("util_mmd")
 
 local reduce_crafting_speed_by_furnace = settings.startup["exp_for_buildings_reduce_crafting_speed_by_furnace"].value
 local reduce_crafting_speed_by_assembling_machine = settings.startup
-["exp_for_buildings_reduce_crafting_speed_by_assembling_machine"].value
+    ["exp_for_buildings_reduce_crafting_speed_by_assembling_machine"].value
 local reduce_crafting_speed_by_research = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_research"].value
 local reduce_crafting_speed_by_mining_speed = settings.startup
@@ -33,8 +33,10 @@ for key, value in pairs(data.raw["assembling-machine"]) do
 end
 
 for key, value in pairs(data.raw["lab"]) do
-    data.raw["lab"][key]["researching_speed"] = data.raw["lab"][key]["researching_speed"] /
-        reduce_crafting_speed_by_research
+    if data.raw["lab"][key]["researching_speed"] ~= nil then
+        data.raw["lab"][key]["researching_speed"] = data.raw["lab"][key]["researching_speed"] /
+            reduce_crafting_speed_by_research
+    end
     CalculateTierAndSetReferences(data.raw["lab"][key])
 end
 
