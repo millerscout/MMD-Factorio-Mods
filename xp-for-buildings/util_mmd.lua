@@ -4,10 +4,14 @@ local speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].
 local energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
 local pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
 local productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
+local exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
+local exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup["exp_for_buildings_calculate_onlythelast_mkbuildings"].value
+local max_level = settings.startup["exp_for_buildings_max_level"].value
+local skippedEntities = {}
 
-
-
-
+for field in exp_for_buildings_skipped_entities:gmatch('([^,]+)') do
+    skippedEntities[field] = 0
+end
 
 
 function getUniqueId(proto)
@@ -43,12 +47,7 @@ function DetermineAndSetPollutionValues(tab, value)
 end
 
 function SetLevels(tab)
-    qtd = #tab.base_machine_names
-    maxLevelPerTier = 100 / qtd
-    tab.tiers = qtd
-    for i = 1, qtd, 1 do
-        table.insert(tab.levels, math.ceil(maxLevelPerTier * i))
-    end
+    table.insert(tab.levels, math.ceil(max_level))
 end
 
 function SetModules(tab)
@@ -90,10 +89,31 @@ end
 
 function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
-    if data.raw.item[proto.name] == nil then
-        print("check" .. proto.name)
-        return
+    if skippedEntities[proto.name] ~= nil then return end
+    if data.raw.item[proto.name] == nil then return end
+
+    if exp_for_buildings_calculate_onlythelast_mkbuildings then
+        if string.match(proto.name, "mk01") then
+            last = ""
+            if string.find(proto.name, 'mk01') then
+                start, _ = string.find(proto.name, 'mk01', 1, true)
+                refName = string.sub(proto.name, 0, start - 1)
+
+                last = proto.name
+                for i = 1, 8, 1 do
+                    exists = data.raw[proto.type][refName .. "mk0" .. i]
+                    if exists ~= nil then
+                        last = exists
+                    else
+                        break
+                    end
+                end
+            end
+            proto = last
+        end
     end
+
+
 
     uniqueId = getUniqueId(proto)
     if ReferenceBuildings.types[uniqueId] == nil then
@@ -115,6 +135,8 @@ function CalculateTierAndSetReferences(proto)
             base_module_slots = {},
             bonus_module_slots = {}
         }
+    else 
+        return 
     end
 
     table.insert(ReferenceBuildings.types[uniqueId].base_machine_names, proto.name)

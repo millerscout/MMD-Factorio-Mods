@@ -99,5 +99,26 @@ data:extend({
         maximum_value = 90,
         setting_type = "startup",
         default_value = 2
+    },
+    {
+        type = "string-setting",
+        name = "exp_for_buildings_skipped_entities",
+        setting_type = "startup",
+        default_value = "burner-lab,",
+        allow_blank = true
+    },
+    {
+        type = "int-setting",
+        name = "exp_for_buildings_max_level",
+        setting_type = "startup",
+        default_value = 100,
+        minimum_value = 0,
+        maximum_value = 100,
+    },
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_calculate_onlythelast_mkbuildings",
+        setting_type = "startup",
+        default_value = true
     }
 })

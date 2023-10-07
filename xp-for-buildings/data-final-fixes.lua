@@ -8,6 +8,7 @@ local reduce_crafting_speed_by_research = settings.startup
 local reduce_crafting_speed_by_mining_speed = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_mining_speed"].value
 
+
 -- for key, value in pairs(data.raw["item"]) do
 --     print("item: " .. key)
 --     for itemKey, value in pairs(data.raw["item"][key]) do

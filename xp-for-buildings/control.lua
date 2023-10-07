@@ -157,14 +157,14 @@ end
 function GetRootNameOfMachine(str)
 	if string.find(str, '-level-') then
 		start, _ = string.find(str, '-level-', 1, true)
-		rootName = string.sub(str, 0, start - 1)
-		return rootName, false
+		refName = string.sub(str, 0, start - 1)
+		return refName, false
 	else
 		return str, true
 	end
 end
 
-max_level = 100
+max_level = settings.startup["exp_for_buildings_max_level"].value
 function update_machine_levels(overwrite)
 	local baseExp = settings.global["exp_for_buildings-baseExp"].value
 	local multiplier = settings.global["exp_for_buildings-multiplier"].value
@@ -251,8 +251,8 @@ function determine_machine(entity)
 	if entity == nil or not entity.valid or (entity.type ~= "assembling-machine" and entity.type ~= "furnace") then
 		return nil
 	end
-	rootName, _ = GetRootNameOfMachine(entity.name)
-	machine = global.machines[rootName]
+	refName, _ = GetRootNameOfMachine(entity.name)
+	machine = global.machines[refName]
 	if machine then
 		return machine
 	end
@@ -337,7 +337,7 @@ function upgrade_factory(surface, targetname, sourceentity)
 		level = global.built_machines[unit_number].level
 	}
 
-	
+
 	if item_requests then
 		surface.create_entity({
 			name = "item-request-proxy",
