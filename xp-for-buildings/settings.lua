@@ -5,7 +5,7 @@ data:extend({
         minimum_value = 1,
         maximum_value = 5000,
         setting_type = "runtime-global",
-        default_value = 250
+        default_value = 180
 
     },
     {
@@ -31,7 +31,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 100,
         setting_type = "startup",
-        default_value = 0.05
+        default_value = 0.06
     },
     {
         type = "double-setting",
@@ -47,7 +47,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 100,
         setting_type = "startup",
-        default_value = 0.03
+        default_value = 0.04
     },
     {
         type = "double-setting",
@@ -55,7 +55,7 @@ data:extend({
         minimum_value = 0,
         maximum_value = 100,
         setting_type = "startup",
-        default_value = 0.01
+        default_value = 0.02
     },
     {
         type = "double-setting",

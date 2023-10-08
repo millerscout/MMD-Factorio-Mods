@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.14
+Date: 2023-10-08
+   - balacing, reduce xp required to level up buildings, it takes alot of time in burning phase (4 hours) 
+   - better compatibility with space exploration, aai industry and krastorio2
+---------------------------------------------------------------------------------------------------
 Version: 0.0.13
 Date: 2023-10-07
    - reduce pollution from entities ( configurable ) 
