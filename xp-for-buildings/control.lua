@@ -1,4 +1,5 @@
 require("util")
+
 local enabledTypes = { "assembling-machine", "furnace", "lab", "mining-drill", "ammo-turret" }
 local enabledFilters = {}
 for _, key in pairs(enabledTypes) do
@@ -103,6 +104,11 @@ end)
 
 function SetupOnChange()
 	global.machines = nil
+	max_level = settings.startup["exp_for_buildings_max_level"].value
+	baseExp = settings.global["exp_for_buildings-baseExp"].value
+	multiplier = settings.global["exp_for_buildings-multiplier"].value
+	divisor = settings.global["exp_for_buildings-divisor"].value
+	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
 	setupLevelForEntities()
 
 	get_built_machines()
@@ -164,12 +170,12 @@ function GetRootNameOfMachine(str)
 	end
 end
 
-max_level = settings.startup["exp_for_buildings_max_level"].value
+local max_level = settings.startup["exp_for_buildings_max_level"].value
+local baseExp = settings.global["exp_for_buildings-baseExp"].value
+local multiplier = settings.global["exp_for_buildings-multiplier"].value
+local divisor = settings.global["exp_for_buildings-divisor"].value
+local revert_levels = settings.global["exp_for_buildings_revert_levels"].value
 function update_machine_levels(overwrite)
-	local baseExp = settings.global["exp_for_buildings-baseExp"].value
-	local multiplier = settings.global["exp_for_buildings-multiplier"].value
-	local divisor = settings.global["exp_for_buildings-divisor"].value
-
 	local lastExp = 0
 	for i = 1, (max_level), 1 do
 		lastExp = lastExp + baseExp * multiplier * i / divisor
@@ -202,8 +208,7 @@ remote.add_interface("factory_levels", {
 			global.machines[machine.name].max_level = machine.max_level or global.machines[machine.name].max_level
 			global.machines[machine.name].next_machine = machine.next_machine or
 				global.machines[machine.name].next_machine
-			global.machines[machine.name].disable_mod_setting = machine.disable_mod_setting or
-				global.machines[machine.name].disable_mod_setting
+
 			if global.machines[machine.name].max_level > max_level then
 				max_level = global.machines[machine.name].max_level
 				update_machine_levels()
@@ -233,6 +238,7 @@ update_machine_levels(true)
 
 function determine_level(metadata, xpCount)
 	if metadata.level == 100 then return 100 end
+	if metadata.level == nil then metadata.level = 0 end
 	if xpCount == nil then
 		xpCount = 0
 	end
@@ -242,21 +248,6 @@ function determine_level(metadata, xpCount)
 	else
 		return metadata.level
 	end
-end
-
-function determine_machine(entity)
-	if settings.global["factory-levels-disable-mod"].value then
-		return nil
-	end
-	if entity == nil or not entity.valid or (entity.type ~= "assembling-machine" and entity.type ~= "furnace") then
-		return nil
-	end
-	refName, _ = GetRootNameOfMachine(entity.name)
-	machine = global.machines[refName]
-	if machine then
-		return machine
-	end
-	return nil
 end
 
 function get_inventory_contents(inventory)
@@ -288,6 +279,9 @@ function upgrade_factory(surface, targetname, sourceentity)
 	local box = sourceentity.bounding_box
 	local item_requests = nil
 	local recipe = nil
+	if revert_levels then
+		targetname, _ = GetRootNameOfMachine(targetname)
+	end
 
 	local existing_requests = surface.find_entity("item-request-proxy", sourceentity.position)
 	if existing_requests then
@@ -388,7 +382,7 @@ function replace_machines(entities)
 		for _, entity in pairs(entities) do
 			metadata = global.built_machines[entity.unit_number]
 			machine = global.machines[metadata.rootName]
-			if machine ~= nil and entity ~= nil then
+			if machine ~= nil and entity ~= nil and not revert_levels then
 				xpCount = getCount(entity)
 				should_have_level = determine_level(metadata, xpCount)
 
@@ -407,6 +401,13 @@ function replace_machines(entities)
 							break
 						end
 					end
+				end
+			elseif revert_levels then
+				if metadata.rootName == nil then
+					metadata.rootName, _ = GetRootNameOfMachine(entity.name)
+				end
+				if entity.name ~= metadata.rootName then
+					upgrade_factory(entity.surface, metadata.rootName, entity)
 				end
 			end
 		end
@@ -488,7 +489,7 @@ function replace_built_entity(entity, count)
 		level = 0
 	}
 	local machine = global.machines[entity.name]
-	if count ~= nil and machine ~= nil then
+	if count ~= nil and machine ~= nil and not revert_levels then
 		local should_have_level = determine_level(global.built_machines[entity.unit_number], count)
 		if entity.type == "lab" then
 			setCount(entity.unit_number, count, "research_count")
@@ -533,6 +534,12 @@ function on_built_entity(event)
 end
 
 function on_runtime_mod_setting_changed(event)
+	max_level = settings.startup["exp_for_buildings_max_level"].value
+	baseExp = settings.global["exp_for_buildings-baseExp"].value
+	multiplier = settings.global["exp_for_buildings-multiplier"].value
+	divisor = settings.global["exp_for_buildings-divisor"].value
+	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
+
 	if event.setting == "exp_for_buildings-baseExp" or event.setting == "exp_for_buildings-multiplier" or
 		event.setting == "exp_for_buildings-divisor" then
 		update_machine_levels(true)
@@ -551,16 +558,9 @@ function on_runtime_mod_setting_changed(event)
 		if max_level ~= 100 then
 			game.print("Exp for Max level of " .. max_level .. ": " .. xpCountRequiredForLevel[max_level])
 		end
-	else
-		update_machines = false
-		for machine_name, machine in pairs(global.machines) do
-			if event.setting == machine.disable_mod_setting then
-				update_machines = true
-			end
-		end
-		if update_machines then
-			get_built_machines()
-		end
+	end
+	if not revert_levels then
+		get_built_machines()
 	end
 end
 

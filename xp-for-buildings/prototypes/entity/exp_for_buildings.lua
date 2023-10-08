@@ -1,5 +1,6 @@
 local buildings = {}
 
+local max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
 function buildings.tryUpdate_machine_speed(machine, level, speed_multiplier)
 	if machine.crafting_speed ~= nil then
 		machine.crafting_speed = machine.crafting_speed + level * speed_multiplier
@@ -23,7 +24,9 @@ function buildings.tryUpdate_machine_pollution(machine, level, base_emission, em
 end
 
 function buildings.Try_update_health(machine, level)
-	machine.max_health = machine.max_health + (machine.max_health / 100 + 0.02) * level
+	if machine.max_health ~= nil then
+		machine.max_health = machine.max_health + (machine.max_health / 100 + max_health_multiplier) * level
+	end
 end
 
 function buildings.Try_update_weaponParams(machine, level)
@@ -37,7 +40,7 @@ function buildings.Try_update_weaponParams(machine, level)
 end
 
 function buildings.Try_update_machine_productivity(machine, level, base_productivity, productivity_multiplier)
-		machine.base_productivity = base_productivity + productivity_multiplier * level
+	machine.base_productivity = base_productivity + productivity_multiplier * level
 end
 
 function buildings.Try_update_machine_module_slots(machine, level, levels_per_module_slot, base_module_slots,
@@ -112,7 +115,7 @@ end
 
 function buildings.get_or_create_machine(machine_type, base_machine_name, level)
 	local base_machine = data.raw[machine_type][base_machine_name]
-	
+
 	if base_machine == nil then
 		return nil
 	end

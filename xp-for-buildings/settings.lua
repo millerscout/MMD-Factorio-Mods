@@ -51,6 +51,14 @@ data:extend({
     },
     {
         type = "double-setting",
+        name = "exp_for_buildings_max_health_multiplier",
+        minimum_value = 0,
+        maximum_value = 100,
+        setting_type = "startup",
+        default_value = 0.04
+    },
+    {
+        type = "double-setting",
         name = "exp_for_buildings_productivity_multiplier",
         minimum_value = 0,
         maximum_value = 100,
@@ -116,7 +124,7 @@ data:extend({
         type = "int-setting",
         name = "exp_for_buildings_max_level",
         setting_type = "startup",
-        default_value = 100,
+        default_value = 30,
         minimum_value = 0,
         maximum_value = 100,
     },
@@ -125,5 +133,11 @@ data:extend({
         name = "exp_for_buildings_calculate_onlythelast_mkbuildings",
         setting_type = "startup",
         default_value = true
-    }
+    },
+    {
+		type = "bool-setting",
+		name = "exp_for_buildings_revert_levels",
+		setting_type = "runtime-global",
+		default_value = false
+	}
 })

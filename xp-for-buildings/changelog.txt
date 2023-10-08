@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.15
+Date: 2023-10-08
+   - improved performance a little bit 
+   - added a way to remove the mod reverting all units (configured on map settings)
+   - fix health erro when entity doesn't have health ( didn't know it was possible ) 
+   - decreased max_level for better compatibility with other mods or heavily modded games
+---------------------------------------------------------------------------------------------------
 Version: 0.0.14
 Date: 2023-10-08
    - balacing, reduce xp required to level up buildings, it takes alot of time in burning phase (4 hours) 
