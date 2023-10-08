@@ -1,9 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.13
+Date: 2023-10-07
+   - reduce pollution from entities ( configurable ) 
+   - reduce energy usage from entities ( configurable ) 
+---------------------------------------------------------------------------------------------------
 Version: 0.0.12
 Date: 2023-10-07
-   adjust what entities are leveled.
+   - adjust what entities are leveled.
    Total overhaul with more than 65k entities like py mods are compatible,
    only the last -mk** gains experience.
+   - add max level setting.
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.11
 Date: 2023-10-07

@@ -5,8 +5,15 @@ local energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"
 local pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
 local productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
 local exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
-local exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup["exp_for_buildings_calculate_onlythelast_mkbuildings"].value
+local exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup
+    ["exp_for_buildings_calculate_onlythelast_mkbuildings"].value
+local reduce_base_pollution = settings.startup
+    ["exp_for_buildings_reduce_base_pollution"].value
+local reduce_energy_usage = settings.startup
+    ["exp_for_buildings_reduce_energy_usage"].value
+
 local max_level = settings.startup["exp_for_buildings_max_level"].value
+
 local skippedEntities = {}
 
 for field in exp_for_buildings_skipped_entities:gmatch('([^,]+)') do
@@ -28,9 +35,9 @@ function has_value(tab, val)
     return false
 end
 
-function DetermineAndSetPollutionValues(tab, value)
-    numberValue = ""
-    Unit = ""
+function GetEnergyValues(value)
+    local numberValue = ""
+    local Unit = ""
     if value == nil then return end
     for i = 1, #value do
         local c = value:sub(i, i)
@@ -42,6 +49,11 @@ function DetermineAndSetPollutionValues(tab, value)
             Unit = Unit .. c
         end
     end
+    return numberValue, Unit
+end
+
+function DetermineAndSetPollutionValues(tab, value)
+    local numberValue, Unit = GetEnergyValues(value)
     table.insert(tab.base_consumption, numberValue)
     table.insert(tab.consumption_unit, Unit)
 end
@@ -91,6 +103,13 @@ function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
     if skippedEntities[proto.name] ~= nil then return end
     if data.raw.item[proto.name] == nil then return end
+    if proto.energy_source ~= nil  and proto.energy_source.emissions_per_minute ~= nil then
+        proto.energy_source.emissions_per_minute = proto.energy_source.emissions_per_minute / reduce_base_pollution
+    end
+    if proto.energy_usage ~= nil then
+        local numberValue, Unit = GetEnergyValues(proto.energy_usage)
+        proto.energy_usage = (numberValue / reduce_energy_usage) .. Unit
+	end
 
     if exp_for_buildings_calculate_onlythelast_mkbuildings then
         if string.match(proto.name, "mk01") then
@@ -135,8 +154,8 @@ function CalculateTierAndSetReferences(proto)
             base_module_slots = {},
             bonus_module_slots = {}
         }
-    else 
-        return 
+    else
+        return
     end
 
     table.insert(ReferenceBuildings.types[uniqueId].base_machine_names, proto.name)

@@ -1,2 +1,2 @@
-factory_levels = require("prototypes.entity.exp_for_buildings")
+exp_for_buildings = require("prototypes.entity.exp_for_buildings")
 require("prototypes.entity.entity")

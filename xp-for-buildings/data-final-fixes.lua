@@ -25,7 +25,7 @@ end
 -- end
 
 -- for key, value in pairs(data.raw["radar"]) do
---     print("radar: " .. key)
+--     print("radar: " .. key)consumption_unit
 -- end
 for key, value in pairs(data.raw["assembling-machine"]) do
     data.raw["assembling-machine"][key].crafting_speed = data.raw["assembling-machine"][key].crafting_speed /
@@ -52,6 +52,6 @@ for key, value in pairs(data.raw["ammo-turret"]) do
 end
 for _, value in pairs(ReferenceBuildings.types) do
     Calculate(value)
-    factory_levels.create_leveled_machines(value)
-    factory_levels.fix_productivity(value)
+    exp_for_buildings.create_leveled_machines(value)
+    exp_for_buildings.fix_productivity(value)
 end

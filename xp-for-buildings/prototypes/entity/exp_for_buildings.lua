@@ -110,23 +110,9 @@ function buildings.update_machine_tint(machine, level)
 	buildings.update_animation_tint(machine.idle_animation, tint)
 end
 
-function buildings.get_furnace(base_machine_name)
-	-- Some mods might turn the stone-furnace, steel-furnace and electric-furnace into assembling machine prototype. Krastorio 2 being an example of one such mod.
-	if data.raw["furnace"][base_machine_name] then
-		return data.raw["furnace"][base_machine_name]
-	end
-	if data.raw["assembling-machine"][base_machine_name] then
-		return data.raw["assembling-machine"][base_machine_name]
-	end
-	return nil
-end
-
 function buildings.get_or_create_machine(machine_type, base_machine_name, level)
 	local base_machine = data.raw[machine_type][base_machine_name]
-	if machine_type == "furnace" then
-		base_machine = buildings.get_furnace(base_machine_name)
-	end
-
+	
 	if base_machine == nil then
 		return nil
 	end
