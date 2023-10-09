@@ -109,6 +109,7 @@ function SetupOnChange()
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
+	isDebug = settings.global["exp_for_buildings_debug"].value
 	setupLevelForEntities()
 
 	get_built_machines()
@@ -175,6 +176,7 @@ local baseExp = settings.global["exp_for_buildings-baseExp"].value
 local multiplier = settings.global["exp_for_buildings-multiplier"].value
 local divisor = settings.global["exp_for_buildings-divisor"].value
 local revert_levels = settings.global["exp_for_buildings_revert_levels"].value
+local isDebug = settings.global["exp_for_buildings_debug"].value
 function update_machine_levels(overwrite)
 	local lastExp = 0
 	for i = 1, (max_level), 1 do
@@ -510,6 +512,11 @@ function replace_built_entity(entity, count)
 end
 
 function on_built_entity(event)
+	if event.created_entity.get_module_inventory() ~= nil then
+		event.created_entity.get_module_inventory()[#event.created_entity.get_module_inventory()].set_stack({
+			name = "Xp-buildings-" .. 1, count = 1 })
+	end
+
 	if (event.created_entity ~= nil and event.created_entity.type == "assembling-machine") then
 		local count = table.remove(global.stored_products_finished_assemblers)
 		replace_built_entity(event.created_entity, count)
@@ -539,6 +546,7 @@ function on_runtime_mod_setting_changed(event)
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
+	isDebug = settings.global["exp_for_buildings_debug"].value
 
 	if event.setting == "exp_for_buildings-baseExp" or event.setting == "exp_for_buildings-multiplier" or
 		event.setting == "exp_for_buildings-divisor" then
@@ -590,6 +598,53 @@ script.on_event(
 	filters)
 
 script.on_event(defines.events.on_gui_closed, function(event)
+	local cplayer   = game.players[event.player_index]
+	local inventory = cplayer.get_main_inventory()
+	if event.entity and inventory then
+		local entityInventory = event.entity.get_module_inventory()
+		if entityInventory then
+			local done = false
+			local oldInventory = {}
+			if not entityInventory.is_empty() then
+				for i = 1, #entityInventory, 1 do
+					if entityInventory[i].valid and entityInventory[i].valid_for_read then
+						if string.match(entityInventory[i].name, "Xp--buildings--") then
+							done = true
+							break
+						end
+					end
+					table.insert(oldInventory, entityInventory[i])
+				end
+			end
+
+			if not done then
+				if #oldInventory == 0 then
+					entityInventory[1].set_stack({ name = "Xp-buildings-" .. 1, count = 1 })
+				else
+					for i = 1, #oldInventory, 1 do
+						if i < #oldInventory then
+							entityInventory[i].set_stack(oldInventory[i])
+						else
+							entityInventory[i].set_stack({ name = "Xp-buildings-" .. 1, count = 1 })
+							s = inventory.insert(oldInventory[i])
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for i = 1, #inventory, 1 do
+		if inventory[i].valid and inventory[i].valid_for_read then
+			if string.match(inventory[i].name, "Xp--buildings--") then
+				if not isDebug then
+					cplayer.remove_item(inventory[i])
+				else
+					game.print("Item not deleted from inventory: " .. inventory[i].name)
+				end
+			end
+		end
+	end
 	if event.entity ~= nil then
 		metadata = global.built_machines[event.entity.unit_number]
 		if metadata ~= nil then
@@ -606,3 +661,34 @@ end)
 script.on_event(
 	defines.events.on_runtime_mod_setting_changed,
 	on_runtime_mod_setting_changed)
+
+script.on_event(
+	defines.events.on_player_input_method_changed,
+	function(a)
+		print("asdsa")
+	end)
+script.on_event(
+	defines.events.on_gui_elem_changed,
+	function(a)
+		print("asdsa")
+	end)
+script.on_event(
+	defines.events.on_gui_click,
+	function(a)
+		print("asdsa")
+	end)
+script.on_event(
+	defines.events.on_gui_opened,
+	function(a)
+		-- inventory = a.entity.get_inventory(4).supports_filters()
+		-- defines.inventory.assembling_machine_modules	
+		-- defines.inventory.lab_modules	
+		-- defines.inventory.mining_drill_modules	
+		-- defines.inventory.rocket_silo_modules	
+		-- defines.inventory.beacon_modules	
+	end)
+script.on_event(
+	defines.events.on_marked_for_deconstruction,
+	function(a)
+		print("asdsa")
+	end)

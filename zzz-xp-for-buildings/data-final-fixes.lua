@@ -1,5 +1,9 @@
 require("util_mmd")
 
+for key, value in pairs(mods) do
+    print(key)
+end
+
 local reduce_crafting_speed_by_furnace = settings.startup["exp_for_buildings_reduce_crafting_speed_by_furnace"].value
 local reduce_crafting_speed_by_assembling_machine = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_assembling_machine"].value
@@ -29,8 +33,9 @@ end
 -- end
 for key, value in pairs(data.raw["assembling-machine"]) do
     data.raw["assembling-machine"][key].crafting_speed = data.raw["assembling-machine"][key].crafting_speed /
-        reduce_crafting_speed_by_assembling_machine
-    CalculateTierAndSetReferences(data.raw["assembling-machine"][key])
+    reduce_crafting_speed_by_assembling_machine
+    AddLevelModuleSlot(data.raw["assembling-machine"][key])
+    -- CalculateTierAndSetReferences(data.raw["assembling-machine"][key])
 end
 
 for key, value in pairs(data.raw["lab"]) do
@@ -38,13 +43,15 @@ for key, value in pairs(data.raw["lab"]) do
         data.raw["lab"][key]["researching_speed"] = data.raw["lab"][key]["researching_speed"] /
             reduce_crafting_speed_by_research
     end
-    CalculateTierAndSetReferences(data.raw["lab"][key])
+    -- CalculateTierAndSetReferences(data.raw["lab"][key])
+    AddLevelModuleSlot(data.raw["lab"][key])
 end
 
 for key, value in pairs(data.raw["mining-drill"]) do
     data.raw["mining-drill"][key]["mining_speed"] = data.raw["mining-drill"][key]["mining_speed"] /
         reduce_crafting_speed_by_mining_speed
-    CalculateTierAndSetReferences(data.raw["mining-drill"][key])
+    -- CalculateTierAndSetReferences(data.raw["mining-drill"][key])
+    AddLevelModuleSlot(data.raw["mining-drill"][key])
 end
 
 for key, value in pairs(data.raw["ammo-turret"]) do

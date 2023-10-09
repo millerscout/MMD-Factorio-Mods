@@ -1,4 +1,4 @@
-local ReferenceBuildings = require("__" .. "xp-for-buildings" .. "__.mmddata")()
+local ReferenceBuildings = require("__" .. "zzz-xp-for-buildings" .. "__.mmddata")()
 
 local speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
 local energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
@@ -99,17 +99,28 @@ function Calculate(tab)
     SetEnergy(tab)
 end
 
+function AddLevelModuleSlot(proto)
+    if proto.module_specification == nil then
+        proto.module_specification = { module_slots = 1 }
+        proto.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
+    else
+        proto.module_specification = {
+            module_slots = proto.module_specification.module_slots + 1 }
+        proto.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
+    end
+end
+
 function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
     if skippedEntities[proto.name] ~= nil then return end
     if data.raw.item[proto.name] == nil then return end
-    if proto.energy_source ~= nil  and proto.energy_source.emissions_per_minute ~= nil then
+    if proto.energy_source ~= nil and proto.energy_source.emissions_per_minute ~= nil then
         proto.energy_source.emissions_per_minute = proto.energy_source.emissions_per_minute / reduce_base_pollution
     end
     if proto.energy_usage ~= nil then
         local numberValue, Unit = GetEnergyValues(proto.energy_usage)
         proto.energy_usage = (numberValue / reduce_energy_usage) .. Unit
-	end
+    end
 
     if exp_for_buildings_calculate_onlythelast_mkbuildings then
         if string.match(proto.name, "mk01") then

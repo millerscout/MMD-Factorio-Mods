@@ -139,5 +139,11 @@ data:extend({
 		name = "exp_for_buildings_revert_levels",
 		setting_type = "runtime-global",
 		default_value = false
+	},
+    {
+		type = "bool-setting",
+		name = "exp_for_buildings_debug",
+		setting_type = "runtime-global",
+		default_value = false
 	}
 })
