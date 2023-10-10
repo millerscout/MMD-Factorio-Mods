@@ -4,7 +4,6 @@ Date: 2023-10-09
    - added debug mode (does nothing yet)
    - fixed reset exp table when changing config settings
    - added a way to disable turret exp, for those that prefer hero turrets
-   - fixed load order, now it should load after all mods
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.15
 Date: 2023-10-08

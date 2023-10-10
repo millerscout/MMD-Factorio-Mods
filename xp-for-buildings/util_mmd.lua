@@ -1,4 +1,4 @@
-local ReferenceBuildings = require("__" .. "zzz-xp-for-buildings" .. "__.mmddata")()
+local ReferenceBuildings = require("__" .. "xp-for-buildings" .. "__.mmddata")()
 
 local speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
 local energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
