@@ -109,6 +109,7 @@ function SetupOnChange()
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
+	isDebug = settings.global["exp_for_buildings_debug"].value
 	setupLevelForEntities()
 
 	get_built_machines()
@@ -175,6 +176,7 @@ local baseExp = settings.global["exp_for_buildings-baseExp"].value
 local multiplier = settings.global["exp_for_buildings-multiplier"].value
 local divisor = settings.global["exp_for_buildings-divisor"].value
 local revert_levels = settings.global["exp_for_buildings_revert_levels"].value
+local isDebug = settings.global["exp_for_buildings_debug"].value
 function update_machine_levels(overwrite)
 	local lastExp = 0
 	for i = 1, (max_level), 1 do
@@ -539,6 +541,10 @@ function on_runtime_mod_setting_changed(event)
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
+	isDebug = settings.global["exp_for_buildings_debug"].value
+
+	global.machines = nil
+	setupLevelForEntities()
 
 	if event.setting == "exp_for_buildings-baseExp" or event.setting == "exp_for_buildings-multiplier" or
 		event.setting == "exp_for_buildings-divisor" then

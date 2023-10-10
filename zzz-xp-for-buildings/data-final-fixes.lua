@@ -7,6 +7,9 @@ local reduce_crafting_speed_by_research = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_research"].value
 local reduce_crafting_speed_by_mining_speed = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_mining_speed"].value
+local disable_turret = settings.startup
+    ["exp_for_buildings_disable_turret"].value
+
 
 
 -- for key, value in pairs(data.raw["item"]) do
@@ -47,8 +50,10 @@ for key, value in pairs(data.raw["mining-drill"]) do
     CalculateTierAndSetReferences(data.raw["mining-drill"][key])
 end
 
-for key, value in pairs(data.raw["ammo-turret"]) do
-    CalculateTierAndSetReferences(data.raw["ammo-turret"][key])
+if not disable_turret then
+    for key, _ in pairs(data.raw["ammo-turret"]) do
+        CalculateTierAndSetReferences(data.raw["ammo-turret"][key])
+    end
 end
 for _, value in pairs(ReferenceBuildings.types) do
     Calculate(value)

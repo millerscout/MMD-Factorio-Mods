@@ -135,9 +135,21 @@ data:extend({
         default_value = true
     },
     {
-		type = "bool-setting",
-		name = "exp_for_buildings_revert_levels",
-		setting_type = "runtime-global",
-		default_value = false
-	}
+        type = "bool-setting",
+        name = "exp_for_buildings_revert_levels",
+        setting_type = "runtime-global",
+        default_value = false
+    },
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_debug",
+        setting_type = "runtime-global",
+        default_value = false
+    },
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_disable_turret",
+        setting_type = "startup",
+        default_value = false
+    }
 })

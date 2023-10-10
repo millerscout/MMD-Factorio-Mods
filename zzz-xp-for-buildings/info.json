@@ -1,7 +1,7 @@
 {
-  "name": "xp-for-buildings",
+  "name": "zzz-xp-for-buildings",
   "title": "Experience for Buildings",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "author": "millerscout",
   "homepage": "https://github.com/millerscout",
   "description": "building gets xp from working and level up",
