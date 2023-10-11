@@ -241,9 +241,11 @@ update_machine_levels(true)
 function determine_level(metadata, xpCount)
 	if metadata.level == 100 then return 100 end
 	if metadata.level == nil then metadata.level = 0 end
+	if xpCountRequiredForLevel == nil then setupLevelForEntities() end
 	if xpCount == nil then
 		xpCount = 0
 	end
+	
 
 	if xpCount >= xpCountRequiredForLevel[metadata.level + 1] then
 		return metadata.level + 1
@@ -454,14 +456,18 @@ function on_mined_entity(event)
 				setStoreCount(global.stored_products_finished_assemblers, event.entity.products_finished)
 			end
 		elseif event.entity.type == "lab" then
-			xpCount = global.built_machines[event.entity.unit_number].research_count
-			if xpCount ~= nil and xpCount > 0 then
-				setStoreCount(global.stored_research_count, xpCount)
+			if global.built_machines[event.entity.unit_number] ~= nil then
+				xpCount = global.built_machines[event.entity.unit_number].research_count
+				if xpCount ~= nil and xpCount > 0 then
+					setStoreCount(global.stored_research_count, xpCount)
+				end
 			end
 		elseif event.entity.type == "mining-drill" then
-			xpCount = global.built_machines[event.entity.unit_number].mining_count
-			if xpCount ~= nil and xpCount > 0 then
-				setStoreCount(global.stored_mining_count, xpCount)
+			if global.built_machines[event.entity.unit_number] ~= nil then
+				xpCount = global.built_machines[event.entity.unit_number].mining_count
+				if xpCount ~= nil and xpCount > 0 then
+					setStoreCount(global.stored_mining_count, xpCount)
+				end
 			end
 		elseif event.entity.type == "ammo-turret" then
 			xpCount = event.entity.damage_dealt
