@@ -160,9 +160,10 @@ function buildings.create_leveled_machines(metadata)
 				end
 
 				if machine.miniable ~= nil then
-					machine.minable.result = metadata.base_machine_names[tier]
+					machine.minable.result = metadata.item[tier]
 				end
-				machine.placeable_by = { item = metadata.base_machine_names[tier], count = 1 }
+
+				machine.placeable_by = { item = metadata.item[tier], count = 1 }
 				machine.localised_name = { "entity-name.exp_for_buildings",
 					{ "entity-name." .. metadata.base_machine_names[tier] }, level }
 				machine.localised_description = { "entity-description." .. metadata.base_machine_names[tier] }

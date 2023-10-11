@@ -102,14 +102,15 @@ end
 function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
     if skippedEntities[proto.name] ~= nil then return end
-    if data.raw.item[proto.name] == nil then return end
-    if proto.energy_source ~= nil  and proto.energy_source.emissions_per_minute ~= nil then
+    if proto.minable == nil or type(proto.minable.result) ~= "string" then return end
+
+    if proto.energy_source ~= nil and proto.energy_source.emissions_per_minute ~= nil then
         proto.energy_source.emissions_per_minute = proto.energy_source.emissions_per_minute / reduce_base_pollution
     end
     if proto.energy_usage ~= nil then
         local numberValue, Unit = GetEnergyValues(proto.energy_usage)
         proto.energy_usage = (numberValue / reduce_energy_usage) .. Unit
-	end
+    end
 
     if exp_for_buildings_calculate_onlythelast_mkbuildings then
         if string.match(proto.name, "mk01") then
@@ -152,13 +153,15 @@ function CalculateTierAndSetReferences(proto)
             productivity_multipliers = {},
             levels_per_module_slots = {},
             base_module_slots = {},
-            bonus_module_slots = {}
+            bonus_module_slots = {},
+            item = {}
         }
     else
         return
     end
 
     table.insert(ReferenceBuildings.types[uniqueId].base_machine_names, proto.name)
+    table.insert(ReferenceBuildings.types[uniqueId].item, proto.minable.result)
     if proto["crafting_speed"] ~= nil then
         table.insert(ReferenceBuildings.types[uniqueId].base_speeds, proto["crafting_speed"])
     elseif proto["mining_speed"] ~= nil then
