@@ -1,15 +1,5 @@
 require("util")
-local enabled_types = settings.startup["exp_for_buildings_enabled_types"].value
-local max_level = settings.startup["exp_for_buildings_max_level"].value
-local isDebug = settings.startup["exp_for_buildings_debug"].value
-
-local enabledTypes = {}
-local enabledFilters = {}
-
-for field in enabled_types:gmatch('([^,]+)') do
-	table.insert(enabledFilters, { filter = "type", type = field })
-	table.insert(enabledTypes, field)
-end
+require("__" .. "xp-for-buildings" .. "__.mmddata")
 
 function CalculateExpForMining(entity)
 	local resources = entity.surface.find_entities_filtered { position = { entity.position.x, entity.position.y }, radius =
@@ -156,7 +146,7 @@ function get_built_machines()
 	end
 	local built_assemblers = {}
 	for _, surface in pairs(game.surfaces) do
-		local entities = surface.find_entities_filtered { type = enabledTypes }
+		local entities = surface.find_entities_filtered { type = EnabledTypes }
 		for _, entity in pairs(entities) do
 			if not global.built_machines[entity.unit_number] then
 				local rootName = GetRootNameOfMachine(entity.name)
@@ -537,12 +527,12 @@ end
 script.on_event(
 	defines.events.on_player_mined_entity,
 	on_mined_entity,
-	enabledFilters)
+	EnabledFilters)
 
 script.on_event(
 	defines.events.on_robot_mined_entity,
 	on_mined_entity,
-	enabledFilters)
+	EnabledFilters)
 
 function replace_built_entity(entity, count)
 	global.built_machines[entity.unit_number] = {
@@ -651,12 +641,12 @@ script.on_event(
 script.on_event(
 	defines.events.on_robot_built_entity,
 	on_built_entity,
-	enabledFilters)
+	EnabledFilters)
 
 script.on_event(
 	defines.events.on_built_entity,
 	on_built_entity,
-	enabledFilters)
+	EnabledFilters)
 
 script.on_event(defines.events.on_gui_closed, function(event)
 	if event.entity ~= nil then

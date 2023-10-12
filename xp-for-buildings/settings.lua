@@ -147,12 +147,6 @@ data:extend({
         allow_blank = true
     },
     {
-        type = "string-setting",
-        name = "exp_for_buildings_enabled_types",
-        setting_type = "startup",
-        default_value = "assembling-machine,furnace,lab,mining-drill,ammo-turret",
-    },
-    {
         type = "int-setting",
         name = "exp_for_buildings_max_level",
         setting_type = "startup",
@@ -181,6 +175,33 @@ data:extend({
     {
         type = "bool-setting",
         name = "exp_for_buildings_disable_turret",
+        setting_type = "startup",
+        default_value = false
+    },
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_disable_assembling_machine",
+        setting_type = "startup",
+        default_value = false
+    }
+    ,
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_disable_furnace",
+        setting_type = "startup",
+        default_value = false
+    }
+    ,
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_disable_lab",
+        setting_type = "startup",
+        default_value = false
+    }
+    ,
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_disable_mining-drill",
         setting_type = "startup",
         default_value = false
     }

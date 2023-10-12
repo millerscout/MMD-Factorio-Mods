@@ -104,12 +104,10 @@ function CalculateTierAndSetReferences(proto)
     elseif proto.type == "mining-drill" then
         data.raw[proto.type][proto.name]["mining_speed"] = data.raw[proto.type][proto.name]["mining_speed"] /
             reduce_crafting_speed_by_mining_speed
-    elseif proto.type == "ammo-turret" then
-        if disable_turret then return end
     end
 
 
-    if proto.energy_source ~= nil and proto.energy_source.emissions_per_minute ~= nil then
+    if proto.energy_source ~= nil and proto.energy_source.emissions_per_minute ~= nil and proto.energy_source.emissions_per_minute > 0 then
         proto.energy_source.emissions_per_minute = proto.energy_source.emissions_per_minute / reduce_base_pollution
     end
     if proto.energy_usage ~= nil then

@@ -22,9 +22,44 @@ reduce_crafting_speed_by_research = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_research"].value
 reduce_crafting_speed_by_mining_speed = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_mining_speed"].value
+
 disable_turret = settings.startup
     ["exp_for_buildings_disable_turret"].value
+disable_assembling_machine = settings.startup
+    ["exp_for_buildings_disable_assembling_machine"].value
+disable_furnace = settings.startup
+    ["exp_for_buildings_disable_furnace"].value
+disable_lab = settings.startup
+    ["exp_for_buildings_disable_lab"].value
+disable_mining = settings.startup
+    ["exp_for_buildings_disable_mining-drill"].value
+
 
 max_level = settings.startup["exp_for_buildings_max_level"].value
 
 skippedEntities = {}
+
+EnabledTypes = {}
+EnabledFilters = {}
+
+
+if not disable_turret then
+    table.insert(EnabledTypes, "ammo-turret")
+    table.insert(EnabledFilters, { filter = "type", type = "ammo-turret" })
+end
+if not disable_assembling_machine then
+    table.insert(EnabledTypes, "assembling-machine")
+    table.insert(EnabledFilters, { filter = "type", type = "assembling-machine" })
+end
+if not disable_furnace then
+    table.insert(EnabledTypes, "furnace")
+    table.insert(EnabledFilters, { filter = "type", type = "furnace" })
+end
+if not disable_lab then
+    table.insert(EnabledTypes, "lab")
+    table.insert(EnabledFilters, { filter = "type", type = "lab" })
+end
+if not disable_mining then
+    table.insert(EnabledTypes, "mining-drill")
+    table.insert(EnabledFilters, { filter = "type", type = "mining-drill" })
+end

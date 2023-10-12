@@ -1,11 +1,5 @@
 require("util_mmd")
 require("__" .. "xp-for-buildings" .. "__.mmddata")
-local enabled_types = settings.startup["exp_for_buildings_enabled_types"].value
-
-local enabledTypes = {}
-for field in enabled_types:gmatch('([^,]+)') do
-    table.insert(enabledTypes, field)
-end
 
 for _, value in pairs(data.raw["recipe"]) do
     if value.hidden and value.result ~= nil then
@@ -26,7 +20,7 @@ if isDebug then
     print("prototype_count:" .. mmddata.qtd)
 end
 
-for _, type in pairs(enabledTypes) do
+for _, type in pairs(EnabledTypes) do
     for key, value in pairs(data.raw[type]) do
         CalculateTierAndSetReferences(data.raw[type][key])
     end
