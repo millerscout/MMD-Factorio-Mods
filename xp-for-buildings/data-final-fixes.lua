@@ -1,62 +1,43 @@
 require("util_mmd")
+require("__" .. "xp-for-buildings" .. "__.mmddata")
+local enabled_types = settings.startup["exp_for_buildings_enabled_types"].value
 
-local reduce_crafting_speed_by_furnace = settings.startup["exp_for_buildings_reduce_crafting_speed_by_furnace"].value
-local reduce_crafting_speed_by_assembling_machine = settings.startup
-    ["exp_for_buildings_reduce_crafting_speed_by_assembling_machine"].value
-local reduce_crafting_speed_by_research = settings.startup
-    ["exp_for_buildings_reduce_crafting_speed_by_research"].value
-local reduce_crafting_speed_by_mining_speed = settings.startup
-    ["exp_for_buildings_reduce_crafting_speed_by_mining_speed"].value
-local disable_turret = settings.startup
-    ["exp_for_buildings_disable_turret"].value
-
-
-
--- for key, value in pairs(data.raw["item"]) do
---     print("item: " .. key)
---     for itemKey, value in pairs(data.raw["item"][key]) do
---         print("itemKey: " .. key .. " " .. itemKey)
---     end
--- end
-for key, value in pairs(data.raw["furnace"]) do
-    data.raw.furnace[key].crafting_speed = data.raw.furnace[key].crafting_speed / reduce_crafting_speed_by_furnace
-    CalculateTierAndSetReferences(data.raw.furnace[key])
-end
--- for key, value in pairs(data.raw["offshore-pump"]) do
---     print("offshore-pump: " .. key)
---     data.raw["offshore-pump"][key]["pumping_speed"] = data.raw["offshore-pump"][key]["pumping_speed"] / 3
--- end
-
--- for key, value in pairs(data.raw["radar"]) do
---     print("radar: " .. key)consumption_unit
--- end
-for key, value in pairs(data.raw["assembling-machine"]) do
-    data.raw["assembling-machine"][key].crafting_speed = data.raw["assembling-machine"][key].crafting_speed /
-        reduce_crafting_speed_by_assembling_machine
-    CalculateTierAndSetReferences(data.raw["assembling-machine"][key])
+local enabledTypes = {}
+for field in enabled_types:gmatch('([^,]+)') do
+    table.insert(enabledTypes, field)
 end
 
-for key, value in pairs(data.raw["lab"]) do
-    if data.raw["lab"][key]["researching_speed"] ~= nil then
-        data.raw["lab"][key]["researching_speed"] = data.raw["lab"][key]["researching_speed"] /
-            reduce_crafting_speed_by_research
-    end
-    CalculateTierAndSetReferences(data.raw["lab"][key])
-end
-
-for key, value in pairs(data.raw["mining-drill"]) do
-    data.raw["mining-drill"][key]["mining_speed"] = data.raw["mining-drill"][key]["mining_speed"] /
-        reduce_crafting_speed_by_mining_speed
-    CalculateTierAndSetReferences(data.raw["mining-drill"][key])
-end
-
-if not disable_turret then
-    for key, _ in pairs(data.raw["ammo-turret"]) do
-        CalculateTierAndSetReferences(data.raw["ammo-turret"][key])
+for _, value in pairs(data.raw["recipe"]) do
+    if value.hidden and value.result ~= nil then
+        mmddata.skipped_entities[value.result] = 0
     end
 end
+if isDebug then
+    mmddata.qtd = 0
+    for key, value in pairs(data.raw) do
+        -- print("raw" .. key)
+        for keyS, _ in pairs(data.raw[key]) do
+            -- print("raw-inner" .. keyS)
+            mmddata.qtd = mmddata.qtd + 1
+        end
+    end
+    -- deleteEntities
+
+    print("prototype_count:" .. mmddata.qtd)
+end
+
+for _, type in pairs(enabledTypes) do
+    for key, value in pairs(data.raw[type]) do
+        CalculateTierAndSetReferences(data.raw[type][key])
+    end
+end
+
 for _, value in pairs(ReferenceBuildings.types) do
     Calculate(value)
     exp_for_buildings.create_leveled_machines(value)
     exp_for_buildings.fix_productivity(value)
+end
+
+if isDebug then
+    print("prototype_count:" .. mmddata.qtd)
 end

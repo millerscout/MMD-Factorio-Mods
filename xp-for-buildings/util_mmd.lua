@@ -1,26 +1,9 @@
-local ReferenceBuildings = require("__" .. "xp-for-buildings" .. "__.mmddata")()
-
-
-local speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
-local energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
-local pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
-local productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
-local exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
-local exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup
-    ["exp_for_buildings_calculate_onlythelast_mkbuildings"].value
-local reduce_base_pollution = settings.startup
-    ["exp_for_buildings_reduce_base_pollution"].value
-local reduce_energy_usage = settings.startup
-    ["exp_for_buildings_reduce_energy_usage"].value
-
-local max_level = settings.startup["exp_for_buildings_max_level"].value
-
-local skippedEntities = {}
+require("__" .. "xp-for-buildings" .. "__.mmddata")
+ReferenceBuildings = mmddata.ReferenceBuildings
 
 for field in exp_for_buildings_skipped_entities:gmatch('([^,]+)') do
     skippedEntities[field] = 0
 end
-
 
 function getUniqueId(proto)
     return proto.type .. "_" .. proto.name
@@ -104,6 +87,27 @@ function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
     if skippedEntities[proto.name] ~= nil then return end
     if proto.minable == nil or type(proto.minable.result) ~= "string" then return end
+    if mmddata.skipped_entities[proto.name] ~= nil then return end
+
+    if proto.type == "furnace" then
+        data.raw.furnace[proto.name].crafting_speed = data.raw.furnace[proto.name].crafting_speed /
+            reduce_crafting_speed_by_furnace
+    elseif proto.type == "assembling-machine" then
+        data.raw[proto.type][proto.name].crafting_speed = data.raw[proto.type][proto.name].crafting_speed /
+            reduce_crafting_speed_by_assembling_machine
+    elseif proto.type == "lab" then
+        if data.raw["lab"][proto.name]["researching_speed"] ~= nil then
+            data.raw[proto.type][proto.name]["researching_speed"] = data.raw[proto.type][proto.name]
+                ["researching_speed"] /
+                reduce_crafting_speed_by_research
+        end
+    elseif proto.type == "mining-drill" then
+        data.raw[proto.type][proto.name]["mining_speed"] = data.raw[proto.type][proto.name]["mining_speed"] /
+            reduce_crafting_speed_by_mining_speed
+    elseif proto.type == "ammo-turret" then
+        if disable_turret then return end
+    end
+
 
     if proto.energy_source ~= nil and proto.energy_source.emissions_per_minute ~= nil then
         proto.energy_source.emissions_per_minute = proto.energy_source.emissions_per_minute / reduce_base_pollution

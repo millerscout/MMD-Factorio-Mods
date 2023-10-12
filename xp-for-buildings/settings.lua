@@ -147,6 +147,12 @@ data:extend({
         allow_blank = true
     },
     {
+        type = "string-setting",
+        name = "exp_for_buildings_enabled_types",
+        setting_type = "startup",
+        default_value = "assembling-machine,furnace,lab,mining-drill,ammo-turret",
+    },
+    {
         type = "int-setting",
         name = "exp_for_buildings_max_level",
         setting_type = "startup",
@@ -169,7 +175,7 @@ data:extend({
     {
         type = "bool-setting",
         name = "exp_for_buildings_debug",
-        setting_type = "runtime-global",
+        setting_type = "startup",
         default_value = false
     },
     {

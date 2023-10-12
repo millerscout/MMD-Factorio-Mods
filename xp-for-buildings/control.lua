@@ -1,10 +1,16 @@
 require("util")
+local enabled_types = settings.startup["exp_for_buildings_enabled_types"].value
+local max_level = settings.startup["exp_for_buildings_max_level"].value
+local isDebug = settings.startup["exp_for_buildings_debug"].value
 
-local enabledTypes = { "assembling-machine", "furnace", "lab", "mining-drill", "ammo-turret" }
+local enabledTypes = {}
 local enabledFilters = {}
-for _, key in pairs(enabledTypes) do
-	table.insert(enabledFilters, { filter = "type", type = key })
+
+for field in enabled_types:gmatch('([^,]+)') do
+	table.insert(enabledFilters, { filter = "type", type = field })
+	table.insert(enabledTypes, field)
 end
+
 function CalculateExpForMining(entity)
 	local resources = entity.surface.find_entities_filtered { position = { entity.position.x, entity.position.y }, radius =
 		math.ceil(entity.prototype.mining_drill_radius), type = "resource" }
@@ -97,12 +103,9 @@ script.on_load(function()
 	end
 	if XpCountRequiredForLevelPerType["assembling-machine"] == nil then
 		update_machine_levels_for_type("assembling-machine")
-		
 	end
 	if XpCountRequiredForLevelPerType["furnace"] == nil then
 		update_machine_levels_for_type("furnace")
-
-		
 	end
 end)
 script.on_configuration_changed(function()
@@ -111,14 +114,13 @@ end)
 
 function SetupOnChange()
 	global.machines = nil
-	max_level = settings.startup["exp_for_buildings_max_level"].value
 	baseExp = settings.global["exp_for_buildings-baseExp"].value
 	baseExp_for_assemblies = settings.global["exp_for_buildings-baseExp_for_assemblies"].value
 	baseExp_for_furnaces = settings.global["exp_for_buildings-baseExp_for_furnaces"].value
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
-	isDebug = settings.global["exp_for_buildings_debug"].value
+
 	SetupLevelForEntities()
 	update_machine_levels(true)
 	update_machine_levels_for_type("assembling-machine", true)
@@ -183,14 +185,13 @@ function GetRootNameOfMachine(str)
 	end
 end
 
-local max_level = settings.startup["exp_for_buildings_max_level"].value
 local baseExp = settings.global["exp_for_buildings-baseExp"].value
 local baseExp_for_assemblies = settings.global["exp_for_buildings-baseExp_for_assemblies"].value
 local baseExp_for_furnaces = settings.global["exp_for_buildings-baseExp_for_furnaces"].value
 local multiplier = settings.global["exp_for_buildings-multiplier"].value
 local divisor = settings.global["exp_for_buildings-divisor"].value
 local revert_levels = settings.global["exp_for_buildings_revert_levels"].value
-local isDebug = settings.global["exp_for_buildings_debug"].value
+
 function update_machine_levels(overwrite)
 	local lastExp = 0
 	for i = 1, (max_level), 1 do
@@ -360,6 +361,8 @@ function upgrade_entity(surface, targetname, sourceentity)
 		recipe = sourceentity.get_recipe()
 	end
 	-- direction not working (Bug? bug to bi-bio)
+	local direction = sourceentity.direction
+	local orientation = sourceentity.orientation
 	local created = surface.create_entity { name = targetname,
 		source = sourceentity,
 		direction = sourceentity.direction,
@@ -421,7 +424,8 @@ function upgrade_entity(surface, targetname, sourceentity)
 	for _, item in pairs(old_on_ground) do
 		item.destroy()
 	end
-
+	created.orientation = orientation
+	created.direction = direction
 	return created
 end
 
@@ -588,14 +592,13 @@ function on_built_entity(event)
 end
 
 function on_runtime_mod_setting_changed(event)
-	max_level = settings.startup["exp_for_buildings_max_level"].value
 	baseExp = settings.global["exp_for_buildings-baseExp"].value
 	baseExp_for_assemblies = settings.global["exp_for_buildings-baseExp_for_assemblies"].value
 	baseExp_for_furnaces = settings.global["exp_for_buildings-baseExp_for_furnaces"].value
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
-	isDebug = settings.global["exp_for_buildings_debug"].value
+
 
 	global.machines = nil
 

@@ -187,3 +187,20 @@ end
 -- for key, value in pairs(data.raw["power-switch"]) do
 --     print("power-switch: " .. key)
 -- end
+
+
+-- for key, value in pairs(data.raw["item"]) do
+--     print("item: " .. key)
+--     for itemKey, value in pairs(data.raw["item"][key]) do
+--         print("itemKey: " .. key .. " " .. itemKey)
+--     end
+-- end
+
+-- for key, value in pairs(data.raw["offshore-pump"]) do
+--     print("offshore-pump: " .. key)
+--     data.raw["offshore-pump"][key]["pumping_speed"] = data.raw["offshore-pump"][key]["pumping_speed"] / 3
+-- end
+
+-- for key, value in pairs(data.raw["radar"]) do
+--     print("radar: " .. key)consumption_unit
+-- end

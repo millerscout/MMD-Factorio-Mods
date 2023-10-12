@@ -1,3 +1,4 @@
+require("__" .. "xp-for-buildings" .. "__.mmddata")
 local buildings = {}
 local range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
 local max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
@@ -114,7 +115,7 @@ function buildings.update_machine_tint(machine, level)
 	buildings.update_animation_tint(machine.idle_animation, tint)
 end
 
-function buildings.get_or_create_machine(machine_type, base_machine_name, level)
+function buildings.get_or_create_machine(machine_type, base_machine_name, level, max_level)
 	local base_machine = data.raw[machine_type][base_machine_name]
 
 	if base_machine == nil then
@@ -124,8 +125,11 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level)
 	if level == 0 then
 		return base_machine
 	end
-
-	local new_machine_name = base_machine_name .. "-level-" .. level
+	local text = level
+	if level == max_level then
+		text = "max"
+	end
+	local new_machine_name = base_machine_name .. "-level-" .. text
 
 	if data.raw[base_machine.type][new_machine_name] == nil then
 		local base_machine = data.raw[machine_type][base_machine_name]
@@ -143,8 +147,9 @@ end
 function buildings.create_leveled_machines(metadata)
 	for tier = 1, metadata.tiers, 1 do
 		for level = 0, metadata.levels[tier], 1 do
-			local machine = buildings.get_or_create_machine(metadata.type, metadata.base_machine_names[tier], level)
-
+			local max_level = metadata.levels[tier]
+			local machine = buildings.get_or_create_machine(metadata.type, metadata.base_machine_names[tier], level,
+				max_level)
 			if level > 0 then
 				machine.flags = machine.flags or { "placeable-neutral", "placeable-player", "player-creation" }
 				local hidden = false
@@ -190,6 +195,9 @@ function buildings.create_leveled_machines(metadata)
 			buildings.Try_update_machine_module_slots(machine, level, metadata.levels_per_module_slots[tier],
 				metadata.base_module_slots[tier], metadata.bonus_module_slots[tier])
 			buildings.update_machine_tint(machine, level)
+			if isDebug then
+				mmddata.qtd = mmddata.qtd + 1
+			end
 		end
 	end
 end
@@ -197,7 +205,8 @@ end
 function buildings.fix_productivity(machines)
 	for tier = 1, machines.tiers, 1 do
 		for level = 0, machines.levels[tier], 1 do
-			local machine = buildings.get_or_create_machine(machines.type, machines.base_machine_names[tier], level)
+			local machine = buildings.get_or_create_machine(machines.type, machines.base_machine_names[tier], level,
+				machines.levels[tier])
 			if machine.base_productivity == 0 or machine.base_productivity == nil then
 				buildings.Try_update_machine_productivity(machine, level, machines.base_productivity[tier],
 					machines.productivity_multipliers[tier])
