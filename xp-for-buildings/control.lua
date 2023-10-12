@@ -75,7 +75,9 @@ function SetupLevelForEntities()
 					max_level = 1
 				}
 			else
-				machines[rootName].max_level = machines[rootName].max_level + 1
+				if machines[rootName].max_level ~= max_level then
+					machines[rootName].max_level = machines[rootName].max_level + 1
+				end
 			end
 		end
 		for rootName, value in pairs(machines) do
@@ -102,10 +104,10 @@ script.on_load(function()
 		update_machine_levels(true)
 	end
 	if XpCountRequiredForLevelPerType["assembling-machine"] == nil then
-		update_machine_levels_for_type("assembling-machine")
+		update_machine_levels_for_type("assembling-machine", true)
 	end
 	if XpCountRequiredForLevelPerType["furnace"] == nil then
-		update_machine_levels_for_type("furnace")
+		update_machine_levels_for_type("furnace", true)
 	end
 end)
 script.on_configuration_changed(function()
@@ -436,13 +438,18 @@ function replace_machines(entities)
 			machine = global.machines[metadata.rootName]
 			if machine ~= nil and entity ~= nil and not revert_levels then
 				xpCount = GetCount(entity)
+				
 				should_have_level = determine_level(metadata, entity.type, xpCount)
 
+				local text = math.min(should_have_level, machine.max_level)
+				if should_have_level == machine.max_level then
+					text = "max"
+				end
 				if machine ~= nil and should_have_level > 0 then
 					if metadata.level ~= should_have_level then
 						if (should_have_level > metadata.level and metadata.level < machine.max_level) then
 							created = upgrade_entity(entity.surface,
-								machine.level_name .. math.min(should_have_level, machine.max_level),
+								machine.level_name .. text,
 								entity)
 							global.built_machines[created.unit_number].level = should_have_level
 							break
@@ -559,8 +566,12 @@ function replace_built_entity(entity, count)
 			entity.products_finished = count
 		end
 		if should_have_level > 0 then
+			local text = math.min(should_have_level, machine.max_level)
+			if should_have_level == machine.max_level then
+				text = "max"
+			end
 			local created = upgrade_entity(entity.surface,
-				machine.level_name .. math.min(should_have_level, machine.max_level), entity)
+				machine.level_name .. text, entity)
 		end
 	else
 		upgrade_entity(entity.surface, entity.name, entity)

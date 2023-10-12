@@ -1,4 +1,8 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.21
+Date: 2023-10-12
+   - fixes crash when entity reachs max level
+---------------------------------------------------------------------------------------------------
 Version: 0.0.20
 Date: 2023-10-12
    - fixes reducing speed for multiple entities that did not have level implemented

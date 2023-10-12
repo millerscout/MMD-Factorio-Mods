@@ -146,10 +146,11 @@ end
 
 function buildings.create_leveled_machines(metadata)
 	for tier = 1, metadata.tiers, 1 do
-		for level = 0, metadata.levels[tier], 1 do
+		for level = 1, metadata.levels[tier], 1 do
 			local max_level = metadata.levels[tier]
 			local machine = buildings.get_or_create_machine(metadata.type, metadata.base_machine_names[tier], level,
 				max_level)
+			
 			if level > 0 then
 				machine.flags = machine.flags or { "placeable-neutral", "placeable-player", "player-creation" }
 				local hidden = false
