@@ -9,6 +9,24 @@ data:extend({
 
     },
     {
+        type = "int-setting",
+        name = "exp_for_buildings-baseExp_for_assemblies",
+        minimum_value = 1,
+        maximum_value = 5000,
+        setting_type = "runtime-global",
+        default_value = 100
+
+    },
+    {
+        type = "int-setting",
+        name = "exp_for_buildings-baseExp_for_furnaces",
+        minimum_value = 1,
+        maximum_value = 5000,
+        setting_type = "runtime-global",
+        default_value = 100
+
+    },
+    {
         type = "double-setting",
         name = "exp_for_buildings-multiplier",
         minimum_value = 1.5,
@@ -24,6 +42,14 @@ data:extend({
         maximum_value = 100,
         setting_type = "runtime-global",
         default_value = 5
+    },
+    {
+        type = "double-setting",
+        name = "exp_for_buildings_range_multiplier",
+        minimum_value = 0,
+        maximum_value = 100,
+        setting_type = "startup",
+        default_value = 0.5
     },
     {
         type = "double-setting",

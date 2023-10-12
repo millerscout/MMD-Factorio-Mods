@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.19
+Date: 2023-10-11
+   - fixes max_level not working properly when not 100 
+   - fixes not triggering built event
+   - fixes not added damage_dealt to turrets
+   - fixes message when updating exp.
+   - increases a little bit the range for each 10 levels, on max_level of 100 the range increases by  10
+   - added new config for baseexp-assembling-machine
+   - added new config for baseexp-furnaces
+   - added range multiplier for turrets
+---------------------------------------------------------------------------------------------------
 Version: 0.0.18
 Date: 2023-10-11
    - fixes picking up ruins entities

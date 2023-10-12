@@ -1,6 +1,7 @@
 local buildings = {}
-
+local range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
 local max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
+
 function buildings.tryUpdate_machine_speed(machine, level, speed_multiplier)
 	if machine.crafting_speed ~= nil then
 		machine.crafting_speed = machine.crafting_speed + level * speed_multiplier
@@ -35,7 +36,7 @@ function buildings.Try_update_weaponParams(machine, level)
 		damage = 0.98
 		if machine.attack_parameters.damage_modifier ~= nil then damage = machine.attack_parameters.damage_modifier end
 		machine.attack_parameters.damage_modifier = damage + (0.02 * level)
-		machine.attack_parameters.range           = machine.attack_parameters.range + 0.06 * level
+		machine.attack_parameters.range           = machine.attack_parameters.range + range_multiplier * level
 	end
 end
 

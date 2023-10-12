@@ -1,5 +1,6 @@
 local ReferenceBuildings = require("__" .. "xp-for-buildings" .. "__.mmddata")()
 
+
 local speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
 local energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
 local pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
@@ -133,9 +134,8 @@ function CalculateTierAndSetReferences(proto)
         end
     end
 
-
-
-    uniqueId = getUniqueId(proto)
+    local uniqueId = getUniqueId(proto)
+    local productivity_bonus = 0
     if ReferenceBuildings.types[uniqueId] == nil then
         ReferenceBuildings.types[uniqueId] = {
             type = proto.type,
@@ -176,9 +176,7 @@ function CalculateTierAndSetReferences(proto)
         table.insert(ReferenceBuildings.types[uniqueId].base_pollution, proto.energy_source.emissions_per_minute)
     end
 
-    if proto.productivity_bonus == nil then
-        productivity_bonus = 0
-    else
+    if proto.productivity_bonus ~= nil then
         productivity_bonus = proto.productivity_bonus
     end
     table.insert(ReferenceBuildings.types[uniqueId].base_productivity, productivity_bonus)

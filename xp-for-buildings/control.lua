@@ -5,8 +5,8 @@ local enabledFilters = {}
 for _, key in pairs(enabledTypes) do
 	table.insert(enabledFilters, { filter = "type", type = key })
 end
-function calculateExpForMining(entity)
-	resources = entity.surface.find_entities_filtered { position = { entity.position.x, entity.position.y }, radius =
+function CalculateExpForMining(entity)
+	local resources = entity.surface.find_entities_filtered { position = { entity.position.x, entity.position.y }, radius =
 		math.ceil(entity.prototype.mining_drill_radius), type = "resource" }
 	local resource_count = 0
 	local mining_count = 0
@@ -27,11 +27,11 @@ function calculateExpForMining(entity)
 	return mining_count
 end
 
-function getCount(entity)
+function GetCount(entity)
 	if entity.type == "lab" then
 		return global.built_machines[entity.unit_number].research_count
 	elseif entity.type == "mining-drill" then
-		return calculateExpForMining(entity)
+		return CalculateExpForMining(entity)
 	elseif entity.type == "ammo-turret" then
 		return entity.damage_dealt
 	else
@@ -39,11 +39,11 @@ function getCount(entity)
 	end
 end
 
-function setCount(unit_number, count, name)
+function SetCount(unit_number, count, name)
 	global.built_machines[unit_number][name] = count
 end
 
-function updateCount(old_unit_number, new_unit_number, name)
+function UpdateCount(old_unit_number, new_unit_number, name)
 	xpCount = 0
 	if global.built_machines[old_unit_number] ~= nil and global.built_machines[old_unit_number][name] ~= nil then
 		xpCount = global.built_machines[old_unit_number][name]
@@ -51,12 +51,12 @@ function updateCount(old_unit_number, new_unit_number, name)
 	global.built_machines[new_unit_number][name] = xpCount
 end
 
-function setStoreCount(tab, count)
+function SetStoreCount(tab, count)
 	table.insert(tab, count)
 	table.sort(tab)
 end
 
-function setupLevelForEntities()
+function SetupLevelForEntities()
 	if global.machines == nil then
 		global.machines = {}
 		local machines = {}
@@ -88,14 +88,21 @@ script.on_load(function()
 	if global.machines == nil then
 		global.reset = true
 		script.on_nth_tick(60, function()
-			setupLevelForEntities()
+			SetupLevelForEntities()
 			get_built_machines()
 		end)
 	end
-	for key, value in pairs(global.built_machines) do
-		if value.rootName == nil then
+	if XpCountRequiredForLevel == nil then
+		update_machine_levels(true)
+	end
+	if XpCountRequiredForLevelPerType["assembling-machine"] == nil then
+		update_machine_levels_for_type("assembling-machine")
+		
+	end
+	if XpCountRequiredForLevelPerType["furnace"] == nil then
+		update_machine_levels_for_type("furnace")
 
-		end
+		
 	end
 end)
 script.on_configuration_changed(function()
@@ -106,11 +113,16 @@ function SetupOnChange()
 	global.machines = nil
 	max_level = settings.startup["exp_for_buildings_max_level"].value
 	baseExp = settings.global["exp_for_buildings-baseExp"].value
+	baseExp_for_assemblies = settings.global["exp_for_buildings-baseExp_for_assemblies"].value
+	baseExp_for_furnaces = settings.global["exp_for_buildings-baseExp_for_furnaces"].value
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
 	isDebug = settings.global["exp_for_buildings_debug"].value
-	setupLevelForEntities()
+	SetupLevelForEntities()
+	update_machine_levels(true)
+	update_machine_levels_for_type("assembling-machine", true)
+	update_machine_levels_for_type("furnace", true)
 
 	get_built_machines()
 
@@ -173,6 +185,8 @@ end
 
 local max_level = settings.startup["exp_for_buildings_max_level"].value
 local baseExp = settings.global["exp_for_buildings-baseExp"].value
+local baseExp_for_assemblies = settings.global["exp_for_buildings-baseExp_for_assemblies"].value
+local baseExp_for_furnaces = settings.global["exp_for_buildings-baseExp_for_furnaces"].value
 local multiplier = settings.global["exp_for_buildings-multiplier"].value
 local divisor = settings.global["exp_for_buildings-divisor"].value
 local revert_levels = settings.global["exp_for_buildings_revert_levels"].value
@@ -181,10 +195,29 @@ function update_machine_levels(overwrite)
 	local lastExp = 0
 	for i = 1, (max_level), 1 do
 		lastExp = lastExp + baseExp * multiplier * i / divisor
-		if xpCountRequiredForLevel[i] == nil then
-			table.insert(xpCountRequiredForLevel, lastExp)
+		if XpCountRequiredForLevel[i] == nil then
+			table.insert(XpCountRequiredForLevel, lastExp)
 		elseif overwrite then
-			xpCountRequiredForLevel[i] = lastExp
+			XpCountRequiredForLevel[i] = lastExp
+		end
+	end
+end
+
+function update_machine_levels_for_type(type, overwrite)
+	local lastExp = 0
+	local exp = 0
+	if type == "furnace" then
+		exp = baseExp_for_furnaces
+	elseif type == "assembling-machine" then
+		exp = baseExp_for_assemblies
+	end
+	for i = 1, (max_level), 1 do
+		lastExp = lastExp + exp * multiplier * i / divisor
+		if XpCountRequiredForLevelPerType[type] == nil then XpCountRequiredForLevelPerType[type] = {} end
+		if XpCountRequiredForLevelPerType[type][i] == nil then
+			table.insert(XpCountRequiredForLevelPerType[type], lastExp)
+		elseif overwrite then
+			XpCountRequiredForLevelPerType[type][i] = lastExp
 		end
 	end
 end
@@ -198,6 +231,8 @@ remote.add_interface("factory_levels", {
 			if machine.max_level > max_level then
 				max_level = machine.max_level
 				update_machine_levels()
+				update_machine_levels_for_type("assembling-machine")
+				update_machine_levels_for_type("furnace")
 			end
 			return true
 		end
@@ -214,6 +249,8 @@ remote.add_interface("factory_levels", {
 			if global.machines[machine.name].max_level > max_level then
 				max_level = global.machines[machine.name].max_level
 				update_machine_levels()
+				update_machine_levels_for_type("assembling-machine")
+				update_machine_levels_for_type("furnace")
 			end
 			return true
 		end
@@ -233,25 +270,31 @@ remote.add_interface("factory_levels", {
 	end
 })
 
-xpCountRequiredForLevel = {
+XpCountRequiredForLevel = {
+}
+XpCountRequiredForLevelPerType = {
 }
 
 update_machine_levels(true)
+update_machine_levels_for_type("assembling-machine", true)
+update_machine_levels_for_type("furnace", true)
 
-function determine_level(metadata, xpCount)
-	if metadata.level == 100 then return 100 end
+function determine_level(metadata, type, xpCount)
+	if metadata.level >= max_level then return max_level end
 	if metadata.level == nil then metadata.level = 0 end
-	if xpCountRequiredForLevel == nil then setupLevelForEntities() end
+	if global.machines == nil then SetupLevelForEntities() end
 	if xpCount == nil then
 		xpCount = 0
 	end
-	
 
-	if xpCount >= xpCountRequiredForLevel[metadata.level + 1] then
+	if XpCountRequiredForLevelPerType[type] ~= nil then
+		if xpCount >= XpCountRequiredForLevelPerType[type][metadata.level + 1] then
+			return metadata.level + 1
+		end
+	elseif xpCount >= XpCountRequiredForLevel[metadata.level + 1] then
 		return metadata.level + 1
-	else
-		return metadata.level
 	end
+	return metadata.level
 end
 
 function get_inventory_contents(inventory)
@@ -276,9 +319,9 @@ function insert_inventory_contents(inventory, contents)
 	end
 end
 
-function upgrade_factory(surface, targetname, sourceentity)
+function upgrade_entity(surface, targetname, sourceentity)
 	unit_number = sourceentity.unit_number
-	xpCount = getCount(sourceentity)
+	xpCount = GetCount(sourceentity)
 
 	local box = sourceentity.bounding_box
 	local item_requests = nil
@@ -349,9 +392,9 @@ function upgrade_factory(surface, targetname, sourceentity)
 
 
 	if created.type == "lab" then
-		updateCount(unit_number, created.unit_number, "research_count")
+		UpdateCount(unit_number, created.unit_number, "research_count")
 	elseif created.type == "mining-drill" then
-		updateCount(unit_number, created.unit_number, "mining_count")
+		UpdateCount(unit_number, created.unit_number, "mining_count")
 	elseif created.type == "ammo-turret" then
 		created.damage_dealt = xpCount
 	else
@@ -368,6 +411,7 @@ function upgrade_factory(surface, targetname, sourceentity)
 	elseif created.type == "furnace" then
 		insert_inventory_contents(created.get_inventory(defines.inventory.furnace_source), input_inventory)
 	end
+
 	insert_inventory_contents(created.get_output_inventory(), output_inventory)
 	insert_inventory_contents(created.get_module_inventory(), module_inventory)
 	insert_inventory_contents(created.get_fuel_inventory(), fuel_inventory)
@@ -387,19 +431,19 @@ function replace_machines(entities)
 			metadata = global.built_machines[entity.unit_number]
 			machine = global.machines[metadata.rootName]
 			if machine ~= nil and entity ~= nil and not revert_levels then
-				xpCount = getCount(entity)
-				should_have_level = determine_level(metadata, xpCount)
+				xpCount = GetCount(entity)
+				should_have_level = determine_level(metadata, entity.type, xpCount)
 
 				if machine ~= nil and should_have_level > 0 then
 					if metadata.level ~= should_have_level then
 						if (should_have_level > metadata.level and metadata.level < machine.max_level) then
-							created = upgrade_factory(entity.surface,
+							created = upgrade_entity(entity.surface,
 								machine.level_name .. math.min(should_have_level, machine.max_level),
 								entity)
 							global.built_machines[created.unit_number].level = should_have_level
 							break
 						elseif (should_have_level > metadata.level and metadata.level >= machine.max_level and machine.next_machine ~= nil) then
-							local created = upgrade_factory(entity.surface, machine.next_machine, entity)
+							local created = upgrade_entity(entity.surface, machine.next_machine, entity)
 							created.products_finished = 0
 							global.built_machines[entity.unit_number].level = should_have_level
 							break
@@ -411,7 +455,7 @@ function replace_machines(entities)
 					metadata.rootName, _ = GetRootNameOfMachine(entity.name)
 				end
 				if entity.name ~= metadata.rootName then
-					upgrade_factory(entity.surface, metadata.rootName, entity)
+					upgrade_entity(entity.surface, metadata.rootName, entity)
 				end
 			end
 		end
@@ -449,30 +493,30 @@ function on_mined_entity(event)
 	if (event.entity ~= nil) then
 		if event.entity.type == "furnace" then
 			if event.entity.products_finished ~= nil and event.entity.products_finished > 0 then
-				setStoreCount(global.stored_products_finished_furnaces, event.entity.products_finished)
+				SetStoreCount(global.stored_products_finished_furnaces, event.entity.products_finished)
 			end
 		elseif event.entity.type == "assembling-machine" then
 			if event.entity.products_finished ~= nil and event.entity.products_finished > 0 then
-				setStoreCount(global.stored_products_finished_assemblers, event.entity.products_finished)
+				SetStoreCount(global.stored_products_finished_assemblers, event.entity.products_finished)
 			end
 		elseif event.entity.type == "lab" then
 			if global.built_machines[event.entity.unit_number] ~= nil then
 				xpCount = global.built_machines[event.entity.unit_number].research_count
 				if xpCount ~= nil and xpCount > 0 then
-					setStoreCount(global.stored_research_count, xpCount)
+					SetStoreCount(global.stored_research_count, xpCount)
 				end
 			end
 		elseif event.entity.type == "mining-drill" then
 			if global.built_machines[event.entity.unit_number] ~= nil then
 				xpCount = global.built_machines[event.entity.unit_number].mining_count
 				if xpCount ~= nil and xpCount > 0 then
-					setStoreCount(global.stored_mining_count, xpCount)
+					SetStoreCount(global.stored_mining_count, xpCount)
 				end
 			end
 		elseif event.entity.type == "ammo-turret" then
 			xpCount = event.entity.damage_dealt
 			if xpCount ~= nil and xpCount > 0 then
-				setStoreCount(global.stored_damage_dealt, xpCount)
+				SetStoreCount(global.stored_damage_dealt, xpCount)
 			end
 		end
 		global.built_machines[event.entity.unit_number] = nil
@@ -498,22 +542,24 @@ function replace_built_entity(entity, count)
 	}
 	local machine = global.machines[entity.name]
 	if count ~= nil and machine ~= nil and not revert_levels then
-		local should_have_level = determine_level(global.built_machines[entity.unit_number], count)
+		local should_have_level = determine_level(global.built_machines[entity.unit_number], entity.type, count)
 		if entity.type == "lab" then
-			setCount(entity.unit_number, count, "research_count")
+			SetCount(entity.unit_number, count, "research_count")
 		elseif entity.type == "mining-drill" then
-			setCount(entity.unit_number, count, "mining_count")
+			SetCount(entity.unit_number, count, "mining_count")
 		elseif entity.type == "ammo-turret" then
-			setCount(entity.unit_number, count, "damage_dealt")
+			if entity.damage_dealt == nil or entity.damage_dealt == 0 then
+				entity.damage_dealt = count
+			end
 		else
 			entity.products_finished = count
 		end
 		if should_have_level > 0 then
-			local created = upgrade_factory(entity.surface,
+			local created = upgrade_entity(entity.surface,
 				machine.level_name .. math.min(should_have_level, machine.max_level), entity)
 		end
 	else
-		upgrade_factory(entity.surface, entity.name, entity)
+		upgrade_entity(entity.surface, entity.name, entity)
 	end
 end
 
@@ -544,33 +590,30 @@ end
 function on_runtime_mod_setting_changed(event)
 	max_level = settings.startup["exp_for_buildings_max_level"].value
 	baseExp = settings.global["exp_for_buildings-baseExp"].value
+	baseExp_for_assemblies = settings.global["exp_for_buildings-baseExp_for_assemblies"].value
+	baseExp_for_furnaces = settings.global["exp_for_buildings-baseExp_for_furnaces"].value
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
 	isDebug = settings.global["exp_for_buildings_debug"].value
 
 	global.machines = nil
-	setupLevelForEntities()
+
 
 	if event.setting == "exp_for_buildings-baseExp" or event.setting == "exp_for_buildings-multiplier" or
-		event.setting == "exp_for_buildings-divisor" then
+		event.setting == "exp_for_buildings-divisor" or event.setting == "exp_for_buildings-baseExp_for_assemblies" then
 		update_machine_levels(true)
-		if xpCountRequiredForLevel[1] then
-			game.print("Exp for Level 1: " .. xpCountRequiredForLevel[1])
+		update_machine_levels_for_type("assembling-machine", true)
+		update_machine_levels_for_type("furnace", true)
+		for i = 1, #XpCountRequiredForLevel, 1 do
+			game.print("Exp for Level " .. i .. ": " .. XpCountRequiredForLevel[i])
 		end
-		if xpCountRequiredForLevel[25] then
-			game.print("Exp for Level 25: " .. xpCountRequiredForLevel[25])
-		end
-		if xpCountRequiredForLevel[50] then
-			game.print("Exp for Level 50: " .. xpCountRequiredForLevel[50])
-		end
-		if xpCountRequiredForLevel[100] then
-			game.print("Exp for Level 100: " .. xpCountRequiredForLevel[100])
-		end
-		if max_level ~= 100 then
-			game.print("Exp for Max level of " .. max_level .. ": " .. xpCountRequiredForLevel[max_level])
+
+		if max_level ~= max_level then
+			game.print("Exp for Max level of " .. max_level .. ": " .. XpCountRequiredForLevel[max_level])
 		end
 	end
+	SetupLevelForEntities()
 	if not revert_levels then
 		get_built_machines()
 	end
@@ -599,7 +642,7 @@ script.on_event(
 script.on_event(
 	defines.events.on_built_entity,
 	on_built_entity,
-	filters)
+	enabledFilters)
 
 script.on_event(defines.events.on_gui_closed, function(event)
 	if event.entity ~= nil then
