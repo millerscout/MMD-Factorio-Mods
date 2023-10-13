@@ -1,7 +1,5 @@
 require("__" .. "xp-for-buildings" .. "__.mmddata")
 local buildings = {}
-local range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
-local max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
 
 function buildings.tryUpdate_machine_speed(machine, level, speed_multiplier)
 	if machine.crafting_speed ~= nil then
@@ -27,7 +25,7 @@ end
 
 function buildings.Try_update_health(machine, level)
 	if machine.max_health ~= nil then
-		machine.max_health = machine.max_health + (machine.max_health / 100 + max_health_multiplier) * level
+		machine.max_health = machine.max_health + (machine.max_health / 100 + Max_health_multiplier) * level
 	end
 end
 
@@ -37,7 +35,11 @@ function buildings.Try_update_weaponParams(machine, level)
 		damage = 0.98
 		if machine.attack_parameters.damage_modifier ~= nil then damage = machine.attack_parameters.damage_modifier end
 		machine.attack_parameters.damage_modifier = damage + (0.02 * level)
-		machine.attack_parameters.range           = machine.attack_parameters.range + range_multiplier * level
+		local range = machine.attack_parameters.range + Range_multiplier * level
+		if range > Max_range_for_turrets then
+			range = Max_range_for_turrets
+		end
+		machine.attack_parameters.range = range
 	end
 end
 
@@ -150,7 +152,7 @@ function buildings.create_leveled_machines(metadata)
 			local max_level = metadata.levels[tier]
 			local machine = buildings.get_or_create_machine(metadata.type, metadata.base_machine_names[tier], level,
 				max_level)
-			
+
 			if level > 0 then
 				machine.flags = machine.flags or { "placeable-neutral", "placeable-player", "player-creation" }
 				local hidden = false
@@ -196,7 +198,7 @@ function buildings.create_leveled_machines(metadata)
 			buildings.Try_update_machine_module_slots(machine, level, metadata.levels_per_module_slots[tier],
 				metadata.base_module_slots[tier], metadata.bonus_module_slots[tier])
 			buildings.update_machine_tint(machine, level)
-			if isDebug then
+			if IsDebug then
 				mmddata.qtd = mmddata.qtd + 1
 			end
 		end

@@ -1,65 +1,68 @@
 mmddata = {}
 mmddata["ReferenceBuildings"] = {}
 mmddata["skipped_entities"] = {}
-speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
-energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
-pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
-productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
-exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
-isDebug = settings.startup["exp_for_buildings_debug"].value
+Range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
+Max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
+Speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
+Energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
+Pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
+Productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
+Exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
+Max_range_for_turrets = settings.startup["exp_for_buildings_max_range_for_turrets"].value
+IsDebug = settings.startup["exp_for_buildings_debug"].value
 
-exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup
+Exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup
     ["exp_for_buildings_calculate_onlythelast_mkbuildings"].value
-reduce_base_pollution = settings.startup
+Reduce_base_pollution = settings.startup
     ["exp_for_buildings_reduce_base_pollution"].value
 reduce_energy_usage = settings.startup
     ["exp_for_buildings_reduce_energy_usage"].value
 
-reduce_crafting_speed_by_furnace = settings.startup["exp_for_buildings_reduce_crafting_speed_by_furnace"].value
-reduce_crafting_speed_by_assembling_machine = settings.startup
+Reduce_crafting_speed_by_furnace = settings.startup["exp_for_buildings_reduce_crafting_speed_by_furnace"].value
+Reduce_crafting_speed_by_assembling_machine = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_assembling_machine"].value
-reduce_crafting_speed_by_research = settings.startup
+Reduce_crafting_speed_by_research = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_research"].value
 reduce_crafting_speed_by_mining_speed = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_mining_speed"].value
 
-disable_turret = settings.startup
+Disable_turret = settings.startup
     ["exp_for_buildings_disable_turret"].value
-disable_assembling_machine = settings.startup
+Disable_assembling_machine = settings.startup
     ["exp_for_buildings_disable_assembling_machine"].value
-disable_furnace = settings.startup
+Disable_furnace = settings.startup
     ["exp_for_buildings_disable_furnace"].value
-disable_lab = settings.startup
+Disable_lab = settings.startup
     ["exp_for_buildings_disable_lab"].value
-disable_mining = settings.startup
+Disable_mining = settings.startup
     ["exp_for_buildings_disable_mining-drill"].value
 
 
-max_level = settings.startup["exp_for_buildings_max_level"].value
+Max_level = settings.startup["exp_for_buildings_max_level"].value
 
-skippedEntities = {}
+SkippedEntities = {}
 
 EnabledTypes = {}
 EnabledFilters = {}
 
 
-if not disable_turret then
+if not Disable_turret then
     table.insert(EnabledTypes, "ammo-turret")
     table.insert(EnabledFilters, { filter = "type", type = "ammo-turret" })
 end
-if not disable_assembling_machine then
+if not Disable_assembling_machine then
     table.insert(EnabledTypes, "assembling-machine")
     table.insert(EnabledFilters, { filter = "type", type = "assembling-machine" })
 end
-if not disable_furnace then
+if not Disable_furnace then
     table.insert(EnabledTypes, "furnace")
     table.insert(EnabledFilters, { filter = "type", type = "furnace" })
 end
-if not disable_lab then
+if not Disable_lab then
     table.insert(EnabledTypes, "lab")
     table.insert(EnabledFilters, { filter = "type", type = "lab" })
 end
-if not disable_mining then
+if not Disable_mining then
     table.insert(EnabledTypes, "mining-drill")
     table.insert(EnabledFilters, { filter = "type", type = "mining-drill" })
 end

@@ -1,8 +1,8 @@
 require("__" .. "xp-for-buildings" .. "__.mmddata")
 ReferenceBuildings = mmddata.ReferenceBuildings
 
-for field in exp_for_buildings_skipped_entities:gmatch('([^,]+)') do
-    skippedEntities[field] = 0
+for field in Exp_for_buildings_skipped_entities:gmatch('([^,]+)') do
+    SkippedEntities[field] = 0
 end
 
 function getUniqueId(proto)
@@ -43,7 +43,7 @@ function DetermineAndSetPollutionValues(tab, value)
 end
 
 function SetLevels(tab)
-    table.insert(tab.levels, math.ceil(max_level))
+    table.insert(tab.levels, math.ceil(Max_level))
 end
 
 function SetModules(tab)
@@ -65,14 +65,14 @@ end
 function SetEnergy(tab)
     nextVal = 0
     for i = 1, #tab.base_machine_names, 1 do
-        nextVal = nextVal + energy_multiplier * i;
+        nextVal = nextVal + Energy_multiplier * i;
         table.insert(tab.energy_multiplier, nextVal)
     end
 end
 
 function SetSpeedMultipliers(tab)
     for i = 1, #tab.base_machine_names, 1 do
-        table.insert(tab.speed_multipliers, speed_multiplier * i)
+        table.insert(tab.speed_multipliers, Speed_multiplier * i)
     end
 end
 
@@ -85,21 +85,21 @@ end
 
 function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
-    if skippedEntities[proto.name] ~= nil then return end
+    if SkippedEntities[proto.name] ~= nil then return end
     if proto.minable == nil or type(proto.minable.result) ~= "string" then return end
     if mmddata.skipped_entities[proto.name] ~= nil then return end
 
     if proto.type == "furnace" then
         data.raw.furnace[proto.name].crafting_speed = data.raw.furnace[proto.name].crafting_speed /
-            reduce_crafting_speed_by_furnace
+            Reduce_crafting_speed_by_furnace
     elseif proto.type == "assembling-machine" then
         data.raw[proto.type][proto.name].crafting_speed = data.raw[proto.type][proto.name].crafting_speed /
-            reduce_crafting_speed_by_assembling_machine
+            Reduce_crafting_speed_by_assembling_machine
     elseif proto.type == "lab" then
         if data.raw["lab"][proto.name]["researching_speed"] ~= nil then
             data.raw[proto.type][proto.name]["researching_speed"] = data.raw[proto.type][proto.name]
                 ["researching_speed"] /
-                reduce_crafting_speed_by_research
+                Reduce_crafting_speed_by_research
         end
     elseif proto.type == "mining-drill" then
         data.raw[proto.type][proto.name]["mining_speed"] = data.raw[proto.type][proto.name]["mining_speed"] /
@@ -108,14 +108,14 @@ function CalculateTierAndSetReferences(proto)
 
 
     if proto.energy_source ~= nil and proto.energy_source.emissions_per_minute ~= nil and proto.energy_source.emissions_per_minute > 0 then
-        proto.energy_source.emissions_per_minute = proto.energy_source.emissions_per_minute / reduce_base_pollution
+        proto.energy_source.emissions_per_minute = proto.energy_source.emissions_per_minute / Reduce_base_pollution
     end
     if proto.energy_usage ~= nil then
         local numberValue, Unit = GetEnergyValues(proto.energy_usage)
         proto.energy_usage = (numberValue / reduce_energy_usage) .. Unit
     end
 
-    if exp_for_buildings_calculate_onlythelast_mkbuildings then
+    if Exp_for_buildings_calculate_onlythelast_mkbuildings then
         if string.match(proto.name, "mk01") then
             last = ""
             if string.find(proto.name, 'mk01') then
@@ -182,13 +182,26 @@ function CalculateTierAndSetReferences(proto)
         productivity_bonus = proto.productivity_bonus
     end
     table.insert(ReferenceBuildings.types[uniqueId].base_productivity, productivity_bonus)
-    table.insert(ReferenceBuildings.types[uniqueId].pollution_multipliers, pollution_multiplier)
-    table.insert(ReferenceBuildings.types[uniqueId].productivity_multipliers, productivity_multipliers)
+    table.insert(ReferenceBuildings.types[uniqueId].pollution_multipliers, Pollution_multiplier)
+    table.insert(ReferenceBuildings.types[uniqueId].productivity_multipliers, Productivity_multipliers)
 
     if proto.module_specification == nil or proto.module_specification.module_slots == nil then
         table.insert(ReferenceBuildings.types[uniqueId].base_module_slots, 0)
     else
         table.insert(ReferenceBuildings.types[uniqueId].base_module_slots,
             proto.module_specification.module_slots)
+    end
+end
+
+function SortExpTable(type)
+	table.sort(global.ExpTable[type], function(u, v)
+		return u["xpCount"] < v["xpCount"]
+	end)
+end
+
+function MigrateToExpTable(stored, type)
+    for _, xpCount in pairs(stored) do
+        level = determine_level(0, type, xpCount)
+        table.insert(global.ExpTable[type], { level = level, xpCount = xpCount })
     end
 end

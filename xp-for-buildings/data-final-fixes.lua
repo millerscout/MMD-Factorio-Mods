@@ -6,7 +6,7 @@ for _, value in pairs(data.raw["recipe"]) do
         mmddata.skipped_entities[value.result] = 0
     end
 end
-if isDebug then
+if IsDebug then
     mmddata.qtd = 0
     for key, value in pairs(data.raw) do
         -- print("raw" .. key)
@@ -32,6 +32,6 @@ for _, value in pairs(ReferenceBuildings.types) do
     exp_for_buildings.fix_productivity(value)
 end
 
-if isDebug then
+if IsDebug then
     print("prototype_count:" .. mmddata.qtd)
 end

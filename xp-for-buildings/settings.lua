@@ -155,6 +155,14 @@ data:extend({
         maximum_value = 100,
     },
     {
+        type = "int-setting",
+        name = "exp_for_buildings_max_range_for_turrets",
+        setting_type = "startup",
+        default_value = 30,
+        minimum_value = 0,
+        maximum_value = 100,
+    },
+    {
         type = "bool-setting",
         name = "exp_for_buildings_calculate_onlythelast_mkbuildings",
         setting_type = "startup",
