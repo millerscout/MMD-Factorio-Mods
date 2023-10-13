@@ -556,8 +556,13 @@ function replace_built_entity(entity, expTable)
 		entity = entity,
 		unit_number = entity.unit_number,
 		rootName = entity.name,
-		level = expTable.level
+		level = 0
 	}
+	if expTable == nil then
+		expTable = { level = 0, xpCount = 0 }
+	end
+	global.built_machines[entity.unit_number].level = expTable.level
+
 	local machine = global.machines[entity.name]
 	if expTable.xpCount ~= nil and machine ~= nil and not revert_levels then
 		local should_have_level = determine_level(global.built_machines[entity.unit_number].level, entity.type,
@@ -590,7 +595,7 @@ end
 function on_built_entity(event)
 	if (event.created_entity ~= nil and global.ExpTable[event.created_entity.type] ~= nil) then
 		SortExpTable(event.created_entity.type)
-		local expTable = table.remove( global.ExpTable[event.created_entity.type])
+		local expTable = table.remove(global.ExpTable[event.created_entity.type])
 		replace_built_entity(event.created_entity, expTable)
 		return
 	end

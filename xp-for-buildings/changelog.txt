@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.24
+Date: 2023-10-13
+    - fixes exptable error when there's no available item
+---------------------------------------------------------------------------------------------------
+Version: 0.0.23
+Date: 2023-10-12
+    - migrate old store exp to exptable by type (dynamic)
+    - remove 60nth tick at when loading game
+    - determine_level now returns the level recursively without waiting for the next tick
+    - simplified more code from built_entity
+    - added a config to set max range for turrets
+---------------------------------------------------------------------------------------------------
 Version: 0.0.22
 Date: 2023-10-12
    - simplified startup load config
