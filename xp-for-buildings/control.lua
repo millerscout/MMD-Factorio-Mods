@@ -404,7 +404,7 @@ function upgrade_entity(surface, targetname, sourceentity)
 	else
 		created.products_finished = xpCount;
 	end
-	sourceentity.destroy()
+	sourceentity.destroy({ raise_destroy = true })
 	global.built_machines[unit_number] = nil
 	if created.type == "assembling-machine" and recipe ~= nil then
 		created.set_recipe(recipe)
@@ -423,7 +423,7 @@ function upgrade_entity(surface, targetname, sourceentity)
 
 	local old_on_ground = surface.find_entities_filtered { area = box, name = 'item-on-ground' }
 	for _, item in pairs(old_on_ground) do
-		item.destroy()
+		item.destroy({ raise_destroy = true })
 	end
 	created.orientation = orientation
 	created.direction = direction
@@ -552,18 +552,16 @@ script.on_event(
 	EnabledFilters)
 
 function replace_built_entity(entity, expTable)
-	global.built_machines[entity.unit_number] = {
-		entity = entity,
-		unit_number = entity.unit_number,
-		rootName = entity.name,
-		level = 0
-	}
+	local machine = global.machines[entity.name]
 	if expTable == nil then
 		expTable = { level = 0, xpCount = 0 }
 	end
-	global.built_machines[entity.unit_number].level = expTable.level
-
-	local machine = global.machines[entity.name]
+	global.built_machines[entity.unit_number] = {
+		entity = entity,
+		unit_number = entity.unit_number,
+		rootName = GetRootNameOfMachine(entity.name),
+		level = expTable.level
+	}
 	if expTable.xpCount ~= nil and machine ~= nil and not revert_levels then
 		local should_have_level = determine_level(global.built_machines[entity.unit_number].level, entity.type,
 			expTable.xpCount)
@@ -579,6 +577,7 @@ function replace_built_entity(entity, expTable)
 		else
 			entity.products_finished = expTable.xpCount
 		end
+
 		if should_have_level > 0 then
 			local text = math.min(should_have_level, machine.max_level)
 			if should_have_level == machine.max_level then
@@ -588,7 +587,7 @@ function replace_built_entity(entity, expTable)
 				machine.level_name .. text, entity)
 		end
 	else
-		upgrade_entity(entity.surface, entity.name, entity)
+		upgrade_entity(entity.surface, GetRootNameOfMachine(entity.name), entity)
 	end
 end
 

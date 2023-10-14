@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.25
+Date: 2023-10-13
+    - fixes shield maker not dissapearing 
+    - fixes leveled entities built by robots not triggering setting exp correctly.
+---------------------------------------------------------------------------------------------------
 Version: 0.0.24
 Date: 2023-10-13
     - fixes exptable error when there's no available item
