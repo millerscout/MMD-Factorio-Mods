@@ -1,6 +1,6 @@
 {
   "name": "MMD-QoL-Tweaks",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "factorio_version": "1.1",
   "title": "MMD QoL/Tweaks",
   "author": "millerscout",
@@ -11,6 +11,8 @@
     "? Natural_Evolution_Buildings",
     "? RampantArsenal",
     "? SteamEngineExtra",
-    "? Electric Furnaces"
+    "? Electric Furnaces",
+    "? aai-industry",
+    "? Bio_Industries"
   ]
 }
