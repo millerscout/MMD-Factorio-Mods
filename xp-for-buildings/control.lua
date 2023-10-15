@@ -322,6 +322,7 @@ function insert_inventory_contents(inventory, contents)
 end
 
 function upgrade_entity(surface, targetname, sourceentity)
+	if SkippedEntities[targetname] ~= nil then return end
 	unit_number = sourceentity.unit_number
 	xpCount = GetCount(sourceentity)
 
@@ -551,8 +552,14 @@ script.on_event(
 	on_mined_entity,
 	EnabledFilters)
 
-function replace_built_entity(entity, expTable)
+function replace_built_entity(entity)
+	if SkippedEntities[entity.name] ~= nil then return end
+	if SkippedEntities[GetRootNameOfMachine(entity.name)] ~= nil then return end
+
+	SortExpTable(entity.type)
+	local expTable = table.remove(global.ExpTable[entity.type])
 	local machine = global.machines[entity.name]
+
 	if expTable == nil then
 		expTable = { level = 0, xpCount = 0 }
 	end
@@ -593,9 +600,7 @@ end
 
 function on_built_entity(event)
 	if (event.created_entity ~= nil and global.ExpTable[event.created_entity.type] ~= nil) then
-		SortExpTable(event.created_entity.type)
-		local expTable = table.remove(global.ExpTable[event.created_entity.type])
-		replace_built_entity(event.created_entity, expTable)
+		replace_built_entity(event.created_entity)
 		return
 	end
 end

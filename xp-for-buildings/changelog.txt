@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.27
+Date: 2023-10-15
+    - fixed a bug that, wipe exptable when an entity is about to be skipped.
+    - fixed a problem when an entity should be skipped and dissapear instead
+---------------------------------------------------------------------------------------------------
 Version: 0.0.26
 Date: 2023-10-15
     - fixed compatibility with SE
