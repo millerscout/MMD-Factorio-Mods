@@ -51,9 +51,6 @@ function buildings.Try_update_machine_module_slots(machine, level, levels_per_mo
 												   module_slot_bonus)
 	machine.module_specification = {
 		module_slots = base_module_slots + (math.floor(level / levels_per_module_slot) * module_slot_bonus) }
-	if machine.module_specification.module_slots > 0 then
-		machine.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
-	end
 end
 
 function buildings.update_animation_tint(animation, tint)
@@ -140,6 +137,8 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level,
 		end
 		local machine = table.deepcopy(base_machine)
 		machine.name = new_machine_name
+		machine.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
+
 		data:extend({ machine })
 	end
 
@@ -197,6 +196,7 @@ function buildings.create_leveled_machines(metadata)
 
 			buildings.Try_update_machine_module_slots(machine, level, metadata.levels_per_module_slots[tier],
 				metadata.base_module_slots[tier], metadata.bonus_module_slots[tier])
+				
 			buildings.update_machine_tint(machine, level)
 			if IsDebug then
 				mmddata.qtd = mmddata.qtd + 1

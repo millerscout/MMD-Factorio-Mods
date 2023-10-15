@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.26
+Date: 2023-10-15
+    - fixed compatibility with SE
+    - enable effects on all entities changed by experience for buildings
+---------------------------------------------------------------------------------------------------
 Version: 0.0.25
 Date: 2023-10-13
     - fixes shield maker not dissapearing 

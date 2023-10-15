@@ -41,6 +41,9 @@ Disable_mining = settings.startup
 Max_level = settings.startup["exp_for_buildings_max_level"].value
 
 SkippedEntities = {}
+SkippedEntities["se-delivery-cannon"] = 0
+SkippedEntities["se-delivery-cannon-weapon"] = 0
+
 
 EnabledTypes = {}
 EnabledFilters = {}

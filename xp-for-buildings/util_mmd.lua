@@ -117,14 +117,14 @@ function CalculateTierAndSetReferences(proto)
 
     if Exp_for_buildings_calculate_onlythelast_mkbuildings then
         if string.match(proto.name, "mk01") then
-            last = ""
+            local last = ""
             if string.find(proto.name, 'mk01') then
-                start, _ = string.find(proto.name, 'mk01', 1, true)
-                refName = string.sub(proto.name, 0, start - 1)
+                local start, _ = string.find(proto.name, 'mk01', 1, true)
+                local refName = string.sub(proto.name, 0, start - 1)
 
                 last = proto.name
                 for i = 1, 8, 1 do
-                    exists = data.raw[proto.type][refName .. "mk0" .. i]
+                    local exists = data.raw[proto.type][refName .. "mk0" .. i]
                     if exists ~= nil then
                         last = exists
                     else
@@ -194,9 +194,9 @@ function CalculateTierAndSetReferences(proto)
 end
 
 function SortExpTable(type)
-	table.sort(global.ExpTable[type], function(u, v)
-		return u["xpCount"] < v["xpCount"]
-	end)
+    table.sort(global.ExpTable[type], function(u, v)
+        return u["xpCount"] < v["xpCount"]
+    end)
 end
 
 function MigrateToExpTable(stored, type)
