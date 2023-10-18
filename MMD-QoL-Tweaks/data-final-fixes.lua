@@ -51,3 +51,7 @@ if mods["SchallAlienLoot"] then
     
 end
 data.raw["item"]["iron-stick"].stack_size = 500
+
+if mods["Electric Furnace"] then
+    data.raw["item"]["bi-woodpulp"].stack_size = 1000
+end

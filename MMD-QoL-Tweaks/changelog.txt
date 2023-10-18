@@ -1,27 +1,40 @@
+
+---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+Date: 10-18-2023
+  Info:
+    - increase wood pulp stack to 1k
+---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+Date: 10-15-2023
+  Info:
+    - change stacks from aai-industry 
+    - change stacks from Bio_Industries 
+    - change stacks from SchallAlienLoot 
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.4
-Date: 10-01-2022
+Date: 10-01-2023
   Info:
     - increase sand stack to 1k
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
-Date: 10-01-2022
+Date: 10-01-2023
   Info:
     - steel directly from iron ore and coke (krastorio mod)
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
-Date: 10-01-2022
+Date: 10-01-2023
   Info:
     - Adds a way to downgrade eletric furnace
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.1
-Date: 9-28-2022
+Date: 9-28-2023
   Info:
     - Adds AAI-Industry compatibility with SteamEnginesExtra
 
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
-Date: 9-24-2022
+Date: 9-24-2023
   Info:
     - Inital Release
     - Sorts inventory when opening
