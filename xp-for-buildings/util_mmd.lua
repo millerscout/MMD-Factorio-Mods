@@ -198,3 +198,13 @@ function SortExpTable(type)
         return u["xpCount"] < v["xpCount"]
     end)
 end
+
+AddEntitiesToDiscoScience = function()
+    if remote.interfaces["DiscoScience"] and remote.interfaces["DiscoScience"]["setLabScale"] then
+        for key, m in pairs(game.entity_prototypes) do
+            if string.find(key, '-level-') and m.type == "lab" then
+                remote.call("DiscoScience", "setLabScale", key, 1)
+            end
+        end
+    end
+end

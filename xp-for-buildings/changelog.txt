@@ -1,6 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.29
+Date: 2023-10-18
+    - Better description to config Thanks to @malomaster
+    - added disco science support
+---------------------------------------------------------------------------------------------------
 Version: 0.0.28
-Date: 2023-10-15
+Date: 2023-10-17
     - optimization (patches)
     - changed "max level" back to number. (need to revert machines before upgrading the mod)
     - fixes damage not being applied to turrets when researching a technology

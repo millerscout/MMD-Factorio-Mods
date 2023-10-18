@@ -1,7 +1,7 @@
 {
   "name": "xp-for-buildings",
   "title": "Experience for Buildings",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "author": "millerscout",
   "homepage": "https://github.com/millerscout",
   "description": "building gets xp from working and level up",
@@ -15,8 +15,8 @@
     "? Krastorio2",
     "? MMD-QoL-Tweaks",
     "? bzgas",
-    "! Factory Levels",
-    "? Small_assembling"
-    
+    "? DiscoScience",
+    "? Small_assembling",
+    "! Factory Levels"
   ]
 }

@@ -81,6 +81,7 @@ end
 
 script.on_init(function()
 	SetupOnChange()
+	AddEntitiesToDiscoScience()
 end)
 
 script.on_load(function()
@@ -97,6 +98,7 @@ script.on_load(function()
 end)
 script.on_configuration_changed(function()
 	SetupOnChange()
+	AddEntitiesToDiscoScience()
 end)
 
 

@@ -148,8 +148,11 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level,
 
 		data:extend({ machine })
 	end
-
-	return data.raw[base_machine.type][new_machine_name]
+	local new_machine = data.raw[base_machine.type][new_machine_name]
+	if DiscoScience and DiscoScience.prepareLab then
+		DiscoScience.prepareLab(new_machine)
+	  end
+	return new_machine
 end
 
 function buildings.create_leveled_machines(metadata)
