@@ -1,6 +1,7 @@
 require("util")
 require("__" .. "xp-for-buildings" .. "__.util_mmd")
 require("__" .. "xp-for-buildings" .. "__.mmddata")
+require("__" .. "xp-for-buildings" .. "__.patches")
 
 function CalculateExpForMining(entity)
 	local resources = entity.surface.find_entities_filtered { position = { entity.position.x, entity.position.y }, radius =
@@ -83,12 +84,10 @@ script.on_init(function()
 end)
 
 script.on_load(function()
-	if global.machines == nil then
-		global.reset = true
-	end
 	if XpCountRequiredForLevel == nil then
 		update_machine_levels(true)
 	end
+
 	if XpCountRequiredForLevelPerType["assembling-machine"] == nil then
 		update_machine_levels_for_type("assembling-machine", true)
 	end
@@ -101,31 +100,20 @@ script.on_configuration_changed(function()
 end)
 
 
-function MigrateFromStore()
-	if global.ExpTable == nil then
-		global.ExpTable = {}
-	end
-
-	for _, type in pairs(EnabledTypes) do
-		if global.ExpTable[type] == nil then
-			global.ExpTable[type] = {}
+local needsUpdate = true
+function RunPatches()
+	if needsUpdate then
+		needsUpdate = false
+		if global.mmd_patch ~= #Patches then
+			if global.mmd_patch == nil then global.mmd_patch = 0 end
+			for i = global.mmd_patch + 1, #Patches, 1 do
+				Patches[i]()
+			end
+			for key, value in pairs(aa) do
+				game.print(key .. "__" .. value)
+			end
 		end
-		if type == "assembling-machine" and global.stored_products_finished_assemblers ~= nil then
-			MigrateToExpTable(global.stored_products_finished_assemblers, type)
-			global.stored_products_finished_assemblers = nil
-		elseif type == "furnace" and global.stored_products_finished_furnaces ~= nil then
-			MigrateToExpTable(global.stored_products_finished_furnaces, type)
-			global.stored_products_finished_furnaces = nil
-		elseif type == "lab" and global.stored_research_count ~= nil then
-			MigrateToExpTable(global.stored_research_count, type)
-			global.stored_research_count = nil
-		elseif type == "mining-drill" and global.stored_mining_count ~= nil then
-			MigrateToExpTable(global.stored_mining_count, type)
-			global.stored_mining_count = nil
-		elseif type == "ammo-turret" and global.stored_damage_dealt ~= nil then
-			MigrateToExpTable(global.stored_damage_dealt, type)
-			global.stored_damage_dealt = nil
-		end
+		global.mmd_patch = #Patches
 	end
 end
 
@@ -281,7 +269,7 @@ update_machine_levels(true)
 update_machine_levels_for_type("assembling-machine", true)
 update_machine_levels_for_type("furnace", true)
 
-function determine_level(level, type, xpCount)
+function Determine_level(level, type, xpCount)
 	if level >= Max_level then return Max_level end
 	if level == nil then level = 0 end
 	if global.machines == nil then SetupLevelForEntities() end
@@ -291,10 +279,10 @@ function determine_level(level, type, xpCount)
 
 	if XpCountRequiredForLevelPerType[type] ~= nil then
 		if xpCount >= XpCountRequiredForLevelPerType[type][level + 1] then
-			return determine_level(level + 1, type, xpCount)
+			return Determine_level(level + 1, type, xpCount)
 		end
 	elseif xpCount >= XpCountRequiredForLevel[level + 1] then
-		return determine_level(level + 1, type, xpCount)
+		return Determine_level(level + 1, type, xpCount)
 	end
 	return level
 end
@@ -439,12 +427,10 @@ function replace_machines(entities)
 			if machine ~= nil and entity ~= nil and not revert_levels then
 				xpCount = GetCount(entity)
 
-				should_have_level = determine_level(metadata.level, entity.type, xpCount)
+				should_have_level = Determine_level(metadata.level, entity.type, xpCount)
 
 				local text = math.min(should_have_level, machine.max_level)
-				if should_have_level == machine.max_level then
-					text = "max"
-				end
+				
 				if machine ~= nil and should_have_level > 0 then
 					if metadata.level ~= should_have_level then
 						if (should_have_level > metadata.level and metadata.level < machine.max_level) then
@@ -481,11 +467,7 @@ function get_next_machine()
 end
 
 script.on_nth_tick(30, function(event)
-	MigrateFromStore()
-	if global.reset then
-		SetupLevelForEntities()
-		get_built_machines()
-	end
+	RunPatches()
 
 	local assemblers = {}
 	for i = 1, 500 do
@@ -496,7 +478,7 @@ script.on_nth_tick(30, function(event)
 		if global.current_machine == nil then
 			break
 		end
-		entity = global.check_machines[global.current_machine]
+		local entity = global.check_machines[global.current_machine]
 		if entity and entity.entity and entity.entity.valid then
 			table.insert(assemblers, entity.entity)
 		else
@@ -506,7 +488,7 @@ script.on_nth_tick(30, function(event)
 	replace_machines(assemblers)
 end)
 
-function on_mined_entity(event)
+function On_mined_entity(event)
 	if (event.entity ~= nil) then
 		if global.built_machines[event.entity.unit_number] ~= nil then
 			local machine = global.built_machines[event.entity.unit_number]
@@ -544,15 +526,15 @@ end
 
 script.on_event(
 	defines.events.on_player_mined_entity,
-	on_mined_entity,
+	On_mined_entity,
 	EnabledFilters)
 
 script.on_event(
 	defines.events.on_robot_mined_entity,
-	on_mined_entity,
+	On_mined_entity,
 	EnabledFilters)
 
-function replace_built_entity(entity)
+function Replace_built_entity(entity)
 	if SkippedEntities[entity.name] ~= nil then return end
 	if SkippedEntities[GetRootNameOfMachine(entity.name)] ~= nil then return end
 
@@ -570,7 +552,7 @@ function replace_built_entity(entity)
 		level = expTable.level
 	}
 	if expTable.xpCount ~= nil and machine ~= nil and not revert_levels then
-		local should_have_level = determine_level(global.built_machines[entity.unit_number].level, entity.type,
+		local should_have_level = Determine_level(global.built_machines[entity.unit_number].level, entity.type,
 			expTable.xpCount)
 
 		if entity.type == "lab" then
@@ -587,9 +569,7 @@ function replace_built_entity(entity)
 
 		if should_have_level > 0 then
 			local text = math.min(should_have_level, machine.max_level)
-			if should_have_level == machine.max_level then
-				text = "max"
-			end
+			
 			local created = upgrade_entity(entity.surface,
 				machine.level_name .. text, entity)
 		end
@@ -598,21 +578,20 @@ function replace_built_entity(entity)
 	end
 end
 
-function on_built_entity(event)
+function On_built_entity(event)
 	if (event.created_entity ~= nil and global.ExpTable[event.created_entity.type] ~= nil) then
-		replace_built_entity(event.created_entity)
+		Replace_built_entity(event.created_entity)
 		return
 	end
 end
 
-function on_runtime_mod_setting_changed(event)
+function On_runtime_mod_setting_changed(event)
 	baseExp = settings.global["exp_for_buildings-baseExp"].value
 	baseExp_for_assemblies = settings.global["exp_for_buildings-baseExp_for_assemblies"].value
 	baseExp_for_furnaces = settings.global["exp_for_buildings-baseExp_for_furnaces"].value
 	multiplier = settings.global["exp_for_buildings-multiplier"].value
 	divisor = settings.global["exp_for_buildings-divisor"].value
 	revert_levels = settings.global["exp_for_buildings_revert_levels"].value
-
 
 	global.machines = nil
 
@@ -653,12 +632,12 @@ script.on_event(
 
 script.on_event(
 	defines.events.on_robot_built_entity,
-	on_built_entity,
+	On_built_entity,
 	EnabledFilters)
 
 script.on_event(
 	defines.events.on_built_entity,
-	on_built_entity,
+	On_built_entity,
 	EnabledFilters)
 
 script.on_event(defines.events.on_gui_closed, function(event)
@@ -677,4 +656,4 @@ script.on_event(defines.events.on_gui_closed, function(event)
 end)
 script.on_event(
 	defines.events.on_runtime_mod_setting_changed,
-	on_runtime_mod_setting_changed)
+	On_runtime_mod_setting_changed)

@@ -32,9 +32,9 @@ end
 function buildings.Try_update_weaponParams(machine, level)
 	if machine.attack_parameters ~= nil then
 		machine.attack_parameters.cooldown = machine.attack_parameters.cooldown - (0.02 * level)
-		damage = 0.98
+		local damage = 0.98
 		if machine.attack_parameters.damage_modifier ~= nil then damage = machine.attack_parameters.damage_modifier end
-		machine.attack_parameters.damage_modifier = damage + (0.02 * level)
+		machine.attack_parameters.damage_modifier = damage + (Damage_multiplier * level)
 		local range = machine.attack_parameters.range + Range_multiplier * level
 		if range > Max_range_for_turrets then
 			range = Max_range_for_turrets
@@ -124,11 +124,8 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level,
 	if level == 0 then
 		return base_machine
 	end
-	local text = level
-	if level == max_level then
-		text = "max"
-	end
-	local new_machine_name = base_machine_name .. "-level-" .. text
+	
+	local new_machine_name = base_machine_name .. "-level-" .. level
 
 	if data.raw[base_machine.type][new_machine_name] == nil then
 		local base_machine = data.raw[machine_type][base_machine_name]
@@ -138,6 +135,16 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level,
 		local machine = table.deepcopy(base_machine)
 		machine.name = new_machine_name
 		machine.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
+
+		if machine.type == "ammo-turret" then
+			for key, value in pairs(TechnologyUpdate) do
+				local ref = value[1]
+				if ref ~= nil and ref.turret_id == base_machine_name then
+					table.insert(data.raw["technology"][key].effects,
+						{ type = ref.type, turret_id = new_machine_name, modifier = ref.modifier, })
+				end
+			end
+		end
 
 		data:extend({ machine })
 	end
@@ -196,7 +203,7 @@ function buildings.create_leveled_machines(metadata)
 
 			buildings.Try_update_machine_module_slots(machine, level, metadata.levels_per_module_slots[tier],
 				metadata.base_module_slots[tier], metadata.bonus_module_slots[tier])
-				
+
 			buildings.update_machine_tint(machine, level)
 			if IsDebug then
 				mmddata.qtd = mmddata.qtd + 1

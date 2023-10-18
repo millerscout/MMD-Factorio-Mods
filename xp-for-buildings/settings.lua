@@ -77,6 +77,14 @@ data:extend({
     },
     {
         type = "double-setting",
+        name = "exp_for_buildings_damage_multiplier",
+        minimum_value = 0,
+        maximum_value = 100,
+        setting_type = "startup",
+        default_value = 0.04
+    },
+    {
+        type = "double-setting",
         name = "exp_for_buildings_max_health_multiplier",
         minimum_value = 0,
         maximum_value = 100,
@@ -212,5 +220,5 @@ data:extend({
         setting_type = "startup",
         default_value = false
     }
-    
+
 })

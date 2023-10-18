@@ -103,7 +103,7 @@ function CalculateTierAndSetReferences(proto)
         end
     elseif proto.type == "mining-drill" then
         data.raw[proto.type][proto.name]["mining_speed"] = data.raw[proto.type][proto.name]["mining_speed"] /
-            reduce_crafting_speed_by_mining_speed
+            Reduce_crafting_speed_by_mining_speed
     end
 
 
@@ -112,7 +112,7 @@ function CalculateTierAndSetReferences(proto)
     end
     if proto.energy_usage ~= nil then
         local numberValue, Unit = GetEnergyValues(proto.energy_usage)
-        proto.energy_usage = (numberValue / reduce_energy_usage) .. Unit
+        proto.energy_usage = (numberValue / Reduce_energy_usage) .. Unit
     end
 
     if Exp_for_buildings_calculate_onlythelast_mkbuildings then
@@ -197,11 +197,4 @@ function SortExpTable(type)
     table.sort(global.ExpTable[type], function(u, v)
         return u["xpCount"] < v["xpCount"]
     end)
-end
-
-function MigrateToExpTable(stored, type)
-    for _, xpCount in pairs(stored) do
-        level = determine_level(0, type, xpCount)
-        table.insert(global.ExpTable[type], { level = level, xpCount = xpCount })
-    end
 end

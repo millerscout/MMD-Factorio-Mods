@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.28
+Date: 2023-10-15
+    - optimization (patches)
+    - changed "max level" back to number. (need to revert machines before upgrading the mod)
+    - fixes damage not being applied to turrets when researching a technology
+    
+---------------------------------------------------------------------------------------------------
 Version: 0.0.27
 Date: 2023-10-15
     - fixed a bug that, wipe exptable when an entity is about to be skipped.

@@ -1,11 +1,15 @@
 mmddata = {}
+
 mmddata["ReferenceBuildings"] = {}
 mmddata["skipped_entities"] = {}
+
 Range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
 Max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
 Speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
 Energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
 Pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
+Damage_multiplier = settings.startup["exp_for_buildings_damage_multiplier"].value
+
 Productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
 Exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
 Max_range_for_turrets = settings.startup["exp_for_buildings_max_range_for_turrets"].value
@@ -15,7 +19,7 @@ Exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup
     ["exp_for_buildings_calculate_onlythelast_mkbuildings"].value
 Reduce_base_pollution = settings.startup
     ["exp_for_buildings_reduce_base_pollution"].value
-reduce_energy_usage = settings.startup
+Reduce_energy_usage = settings.startup
     ["exp_for_buildings_reduce_energy_usage"].value
 
 Reduce_crafting_speed_by_furnace = settings.startup["exp_for_buildings_reduce_crafting_speed_by_furnace"].value
@@ -23,7 +27,7 @@ Reduce_crafting_speed_by_assembling_machine = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_assembling_machine"].value
 Reduce_crafting_speed_by_research = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_research"].value
-reduce_crafting_speed_by_mining_speed = settings.startup
+Reduce_crafting_speed_by_mining_speed = settings.startup
     ["exp_for_buildings_reduce_crafting_speed_by_mining_speed"].value
 
 Disable_turret = settings.startup
@@ -48,6 +52,8 @@ SkippedEntities["se-delivery-cannon-weapon"] = 0
 EnabledTypes = {}
 EnabledFilters = {}
 
+TechnologyUpdate = {}
+
 
 if not Disable_turret then
     table.insert(EnabledTypes, "ammo-turret")
@@ -69,3 +75,4 @@ if not Disable_mining then
     table.insert(EnabledTypes, "mining-drill")
     table.insert(EnabledFilters, { filter = "type", type = "mining-drill" })
 end
+

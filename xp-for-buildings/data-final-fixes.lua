@@ -1,6 +1,18 @@
 require("util_mmd")
 require("__" .. "xp-for-buildings" .. "__.mmddata")
 
+for key, value in pairs(data.raw["technology"]) do
+    if value.effects ~= nil then
+        for _, effect in pairs(value.effects) do
+            if not Disable_turret then
+                if effect.type == "turret-attack" then
+                    if TechnologyUpdate[key] == nil then TechnologyUpdate[key] = {} end
+                    table.insert(TechnologyUpdate[key], effect)
+                end
+            end
+        end
+    end
+end
 for _, value in pairs(data.raw["recipe"]) do
     if value.hidden and value.result ~= nil then
         mmddata.skipped_entities[value.result] = 0
