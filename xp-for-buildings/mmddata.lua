@@ -4,13 +4,13 @@ mmddata["ReferenceBuildings"] = {}
 mmddata["skipped_entities"] = {}
 
 Range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
-Max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
-Speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
-Energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
-Pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
-Damage_multiplier = settings.startup["exp_for_buildings_damage_multiplier"].value
+Max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value * 0.01
+Speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value * 0.01
+Energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value * 0.01
+Pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value * 0.01
+Damage_multiplier = settings.startup["exp_for_buildings_damage_multiplier"].value * 0.01
 
-Productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
+Productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value * 0.01
 Exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
 Max_range_for_turrets = settings.startup["exp_for_buildings_max_range_for_turrets"].value
 IsDebug = settings.startup["exp_for_buildings_debug"].value
