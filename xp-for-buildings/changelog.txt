@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.30
+Date: 2023-10-18
+    - fixes #9 github issue ( crash when research completes ) 
+    - fixes #8 github issue ( not reverting properly ) 
+    - removed entities from deepcore mining core 
+    
+---------------------------------------------------------------------------------------------------
 Version: 0.0.29
 Date: 2023-10-18
     - Better description to config Thanks to @malomaster
@@ -7,7 +14,7 @@ Date: 2023-10-18
 Version: 0.0.28
 Date: 2023-10-17
     - optimization (patches)
-    - changed "max level" back to number. (need to revert machines before upgrading the mod)
+    - changed "max level" back to number. migrations added to 0.0.30
     - fixes damage not being applied to turrets when researching a technology
     
 ---------------------------------------------------------------------------------------------------

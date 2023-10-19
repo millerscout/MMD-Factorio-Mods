@@ -48,6 +48,11 @@ SkippedEntities = {}
 SkippedEntities["se-delivery-cannon"] = 0
 SkippedEntities["se-delivery-cannon-weapon"] = 0
 
+-- skipped entities temporally, until implemented
+SkippedEntities["vtk-deepcore-mining-moho"] = 0
+SkippedEntities["vtk-deepcore-mining-drill"]=0
+SkippedEntities["vtk-deepcore-mining-drill-advanced"]=0
+
 
 EnabledTypes = {}
 EnabledFilters = {}

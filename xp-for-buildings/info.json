@@ -1,7 +1,7 @@
 {
   "name": "xp-for-buildings",
   "title": "Experience for Buildings",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "author": "millerscout",
   "homepage": "https://github.com/millerscout",
   "description": "building gets xp from working and level up",
@@ -17,6 +17,8 @@
     "? bzgas",
     "? DiscoScience",
     "? Small_assembling",
+    "? pneumatic-transport",
     "! Factory Levels"
+    
   ]
 }
