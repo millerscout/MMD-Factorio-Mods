@@ -73,7 +73,7 @@ data:extend({
         maximum_value = 1000,
 		order = "bd",
         setting_type = "startup",
-        default_value = 5
+        default_value = 10
     },
     {
         type = "double-setting",
@@ -187,7 +187,7 @@ data:extend({
         name = "exp_for_buildings_max_range_for_turrets",
         setting_type = "startup",
 		order = "bh",
-        default_value = 30,
+        default_value = 15,
         minimum_value = 0,
         maximum_value = 100,
     },
