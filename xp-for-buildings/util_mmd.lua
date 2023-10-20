@@ -87,7 +87,7 @@ function CalculateTierAndSetReferences(proto)
     if ReferenceBuildings.types == nil then ReferenceBuildings.types = {} end
     if SkippedEntities[proto.name] ~= nil then return end
     if proto.minable == nil or type(proto.minable.result) ~= "string" then return end
-    if mmddata.skipped_entities[proto.name] ~= nil then return end
+    if mmddata.included_entities[proto.name] == nil then return end
 
     if proto.type == "furnace" then
         data.raw.furnace[proto.name].crafting_speed = data.raw.furnace[proto.name].crafting_speed /

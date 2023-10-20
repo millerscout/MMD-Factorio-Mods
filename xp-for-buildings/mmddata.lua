@@ -1,7 +1,7 @@
 mmddata = {}
 
 mmddata["ReferenceBuildings"] = {}
-mmddata["skipped_entities"] = {}
+mmddata["included_entities"] = {}
 
 Range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
 Max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value

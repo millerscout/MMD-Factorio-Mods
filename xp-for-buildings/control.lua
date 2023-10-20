@@ -618,7 +618,7 @@ end
 script.on_event(
 	defines.events.on_research_finished,
 	function(data)
-		if data.research ~= nil then
+		if not data.by_script then
 			for _, machine in pairs(global.built_machines) do
 				if machine.entity.type == "lab" then
 					if machine.research_count == nil then

@@ -607,6 +607,10 @@
     [
       "Alien_Hatchery-level-max",
       "Alien_Hatchery"
+    ],
+    [
+      "oil_rig-level-max",
+      "oil_rig"
     ]
   ]
 }
