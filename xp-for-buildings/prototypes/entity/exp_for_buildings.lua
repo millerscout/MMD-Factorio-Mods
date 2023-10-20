@@ -35,9 +35,10 @@ function buildings.Try_update_weaponParams(machine, level)
 		local damage = 0.98
 		if machine.attack_parameters.damage_modifier ~= nil then damage = machine.attack_parameters.damage_modifier end
 		machine.attack_parameters.damage_modifier = damage + (Damage_multiplier * level)
+		local lastRange = machine.attack_parameters.range + Max_range_for_turrets
 		local range = machine.attack_parameters.range + Range_multiplier * level
-		if range > Max_range_for_turrets then
-			range = Max_range_for_turrets
+		if range > lastRange then
+			range = lastRange
 		end
 		machine.attack_parameters.range = range
 	end
