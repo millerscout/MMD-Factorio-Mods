@@ -366,6 +366,9 @@ function Upgrade_entity(surface, targetname, sourceentity)
 		position = sourceentity.position,
 		force = sourceentity.force }
 
+	if created == nil then
+		return
+	end
 	global.built_machines[created.unit_number] = {
 		entity = created,
 		unit_number = created.unit_number,

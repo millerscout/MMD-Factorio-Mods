@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.32
+Date: 2023-10-22
+    - fixes a bug when an entity is not created, but triggers the event on_built_entity.
+    - improve entity types support for 248k mod
+    - added a config force effects on entities
+---------------------------------------------------------------------------------------------------
 Version: 0.0.31
 Date: 2023-10-19
     - fixes #10 github issue ( crash when research completes another try ) 

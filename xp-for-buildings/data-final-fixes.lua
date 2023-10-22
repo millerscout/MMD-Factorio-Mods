@@ -13,46 +13,56 @@ for key, value in pairs(data.raw["technology"]) do
         end
     end
 end
+function IncludeEntity(name)
+    local item = data.raw.item[name]
+    if item ~= nil and item.place_result and mmddata.included_entities[item.place_result] == nil then
+        mmddata.included_entities[item.place_result] = 0
+    end
+end
+
+function CheckResultItemAndAdd(recipe)
+    if recipe.result ~= nil then
+        IncludeEntity(recipe.result)
+    elseif recipe.results ~= nil then
+        for _, r in pairs(recipe.results) do
+            if r.name ~= nil then
+                IncludeEntity(r.name)
+            end
+        end
+    end
+    if recipe.normal ~= nil then
+        if recipe.normal.result ~= nil then
+            if mmddata.included_entities[recipe.normal.result] == nil then
+                mmddata.included_entities[recipe.normal.result] = 0
+            end
+        else
+            for _, r in pairs(recipe.normal.results) do
+                if r.name ~= nil then
+                    IncludeEntity(r.name)
+                end
+            end
+        end
+    end
+    if recipe.expensive ~= nil then
+        if recipe.expensive.result ~= nil then
+            if mmddata.included_entities[recipe.expensive.result] == nil then
+                mmddata.included_entities[recipe.expensive.result] = 0
+            end
+        else
+            for _, r in pairs(recipe.expensive.results) do
+                if r.name ~= nil then
+                    IncludeEntity(r.name)
+                end
+            end
+        end
+    end
+end
+
 for _, value in pairs(data.raw["recipe"]) do
     local available = (not value.hidden or value.hidden == nil)
     if available then
         -- log(serpent.block(value))
-        if value.result ~= nil then
-            mmddata.included_entities[value.result] = 0
-        elseif value.results ~= nil then
-            for _, r in pairs(value.results) do
-                if r.name ~= nil and mmddata.included_entities[r.name] == nil then
-                    mmddata.included_entities[r.name] = 0
-                end
-            end
-        end
-        if value.normal ~= nil then
-            if value.normal.result ~= nil then
-                if mmddata.included_entities[value.normal.result] == nil then
-                    mmddata.included_entities[value.normal.result] = 0
-                end
-            else
-                for _, r in pairs(value.normal.results) do
-                    
-                    if r.name ~= nil and mmddata.included_entities[r.name] == nil then
-                        mmddata.included_entities[r.name] = 0
-                    end
-                end
-            end
-        end
-        if value.expensive ~= nil then
-            if value.expensive.result ~= nil then
-                if mmddata.included_entities[value.expensive.result] == nil then
-                    mmddata.included_entities[value.expensive.result] = 0
-                end
-            else
-                for _, r in pairs(value.expensive.results) do
-                    if r.name ~= nil and mmddata.included_entities[r.name] == nil then
-                        mmddata.included_entities[r.name] = 0
-                    end
-                end
-            end
-        end
+        CheckResultItemAndAdd(value)
     end
 end
 if IsDebug then

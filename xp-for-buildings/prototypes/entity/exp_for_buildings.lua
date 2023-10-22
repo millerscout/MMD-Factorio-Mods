@@ -125,7 +125,7 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level,
 	if level == 0 then
 		return base_machine
 	end
-	
+
 	local new_machine_name = base_machine_name .. "-level-" .. level
 
 	if data.raw[base_machine.type][new_machine_name] == nil then
@@ -135,7 +135,9 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level,
 		end
 		local machine = table.deepcopy(base_machine)
 		machine.name = new_machine_name
-		machine.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
+		if Force_Effects_On_Entities then
+			machine.allowed_effects = { "consumption", "speed", "productivity", "pollution" }
+		end
 
 		if machine.type == "ammo-turret" then
 			for key, value in pairs(TechnologyUpdate) do
@@ -152,7 +154,7 @@ function buildings.get_or_create_machine(machine_type, base_machine_name, level,
 	local new_machine = data.raw[base_machine.type][new_machine_name]
 	if DiscoScience and DiscoScience.prepareLab then
 		DiscoScience.prepareLab(new_machine)
-	  end
+	end
 	return new_machine
 end
 

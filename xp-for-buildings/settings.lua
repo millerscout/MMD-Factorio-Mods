@@ -219,6 +219,12 @@ data:extend({
         name = "exp_for_buildings_disable_mining-drill",
         setting_type = "startup",
         default_value = false
+    },
+    {
+        type = "bool-setting",
+        name = "exp_for_buildings_Force_Effects_On_Entities",
+        setting_type = "startup",
+        default_value = true
     }
 
 })

@@ -13,6 +13,7 @@ Damage_multiplier = settings.startup["exp_for_buildings_damage_multiplier"].valu
 Productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
 Exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
 Max_range_for_turrets = settings.startup["exp_for_buildings_max_range_for_turrets"].value
+Force_Effects_On_Entities = settings.startup["exp_for_buildings_Force_Effects_On_Entities"].value
 IsDebug = settings.startup["exp_for_buildings_debug"].value
 
 Exp_for_buildings_calculate_onlythelast_mkbuildings = settings.startup
