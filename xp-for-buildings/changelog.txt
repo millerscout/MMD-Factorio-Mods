@@ -6,208 +6,248 @@ Date: 2023-10-22
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.32
 Date: 2023-10-22
-    - fixes a bug when an entity is not created, but triggers the event on_built_entity.
+  Bugfix:
+    - fixes a bug when an entity is not created, but triggers the event on_built_entity
+  Minor Feature:
     - improve entity types support for 248k mod
     - added a config force effects on entities
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.31
 Date: 2023-10-19
-    - fixes #10 github issue ( crash when research completes another try ) 
+  Bugfix:
+    - fixes #10 github issue ( crash when research completes another try )
     - fixes how entities are included in the level algorithm
-    - removed entities from deepcore mining core 
-    - when isDebug is true, it will show prototype count on log.
+  Minor Feature:
+    - removed entities from deepcore mining core
+    - when isDebug is true, it will show prototype count on log
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.30
 Date: 2023-10-18
-    - fixes #9 github issue ( crash when research completes ) 
-    - fixes #8 github issue ( not reverting properly ) 
-    - removed entities from deepcore mining core 
-    
+  Bugfix:
+    - fixes #9 github issue ( crash when research completes )
+    - fixes #8 github issue ( not reverting properly )
+  Minor Feature:
+    - removed entities from deepcore mining core
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.29
 Date: 2023-10-18
+  Feature:
     - Better description to config Thanks to @malomaster
     - added disco science support
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.28
 Date: 2023-10-17
+  Optimizations:
     - optimization (patches)
+  Feature:
     - changed "max level" back to number. migrations added to 0.0.30
     - fixes damage not being applied to turrets when researching a technology
-    
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.27
 Date: 2023-10-15
-    - fixed a bug that, wipe exptable when an entity is about to be skipped.
+  Bugfix:
+    - fixed a bug that, wipe exptable when an entity is about to be skipped
     - fixed a problem when an entity should be skipped and dissapear instead
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.26
 Date: 2023-10-15
+  Bugfix:
     - fixed compatibility with SE
+  Minor Feature:
     - enable effects on all entities changed by experience for buildings
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.25
 Date: 2023-10-13
-    - fixes shield maker not dissapearing 
-    - fixes leveled entities built by robots not triggering setting exp correctly.
+  Bugfix:
+    - fixes shield maker not dissapearing
+    - fixes leveled entities built by robots not triggering setting exp correctly
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.24
 Date: 2023-10-13
+  Bugfix:
     - fixes exptable error when there's no available item
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.23
 Date: 2023-10-12
+  Optimizations:
     - migrate old store exp to exptable by type (dynamic)
     - remove 60nth tick at when loading game
     - determine_level now returns the level recursively without waiting for the next tick
     - simplified more code from built_entity
+  Minor Feature:
     - added a config to set max range for turrets
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.22
 Date: 2023-10-12
-   - simplified startup load config
-   - changed from string with comma to disable boolean (better UX)
-   - possible fix when emission is not a number
-   - better settings clarification
+  Bugfix:
+    - possible fix when emission is not a number
+  Optimizations:
+    - simplified startup load config
+    - changed from string with comma to disable boolean (better UX)
+    - better settings clarification
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.21
 Date: 2023-10-12
-   - fixes crash when entity reachs max level
+  Bugfix:
+    - fixes crash when entity reachs max level
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.20
 Date: 2023-10-12
-   - fixes reducing speed for multiple entities that did not have level implemented
-   - simplified code for better performance
-   - changed text of entities, when it reaches max level instead of number it shows the text "MAX"
-   - skip entities that are hidden.
-   - fixed rotation on entities
-   - added prototypes calculation (DEBUG)
-   - added config to enable-disable type of entities to be processed
-   
+  Bugfix:
+    - fixes reducing speed for multiple entities that did not have level implemented
+    - fixed rotation on entities
+  Optimizations:
+    - simplified code for better performance
+    - skip entities that are hidden
+    - added prototypes calculation (DEBUG)
+  Minor Feature:
+    - changed text of entities, when it reaches max level instead of number it shows the text "MAX"
+    - added config to enable-disable type of entities to be processed
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.19
 Date: 2023-10-11
-   - fixes max_level not working properly when not 100 
-   - fixes not triggering built event
-   - fixes not added damage_dealt to turrets
-   - fixes message when updating exp.
-   - increases a little bit the range for each 10 levels, on max_level of 100 the range increases by  10
-   - added new config for baseexp-assembling-machine
-   - added new config for baseexp-furnaces
-   - added range multiplier for turrets
+  Bugfix:
+    - fixes max_level not working properly when not 100
+    - fixes not triggering built event
+    - fixes not added damage_dealt to turrets
+    - fixes message when updating exp
+  Feature:
+    - increases a little bit the range for each 10 levels, on max_level of 100 the range increases by  10
+    - added new config for baseexp-assembling-machine
+    - added new config for baseexp-furnaces
+    - added range multiplier for turrets
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.18
 Date: 2023-10-11
-   - fixes picking up ruins entities
-   - fixes error using factory planner.
-   (https://github.com/millerscout/MMD-Factorio-Mods/issues/4)
+  Bugfix:
+    - fixes picking up ruins entities
+    - fixes error using factory planner
+      (https://github.com/millerscout/MMD-Factorio-Mods/issues/4)
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.17
 Date: 2023-10-10
-   - added support for more entities
+  Feature:
+    - added support for more entities
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.16
 Date: 2023-10-09
-   - added debug mode (does nothing yet)
-   - fixed reset exp table when changing config settings
-   - added a way to disable turret exp, for those that prefer hero turrets
+  Bugfix:
+    - fixed reset exp table when changing config settings
+  Feature:
+    - added debug mode (does nothing yet)
+    - added a way to disable turret exp, for those that prefer hero turrets
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.15
 Date: 2023-10-08
-   - improved performance a little bit 
-   - added a way to remove the mod reverting all units (configured on map settings)
-   - fix health erro when entity doesn't have health ( didn't know it was possible ) 
-   - decreased max_level for better compatibility with other mods or heavily modded games
+  Bugfix:
+    - fix health erro when entity doesn't have health ( didn't know it was possible )
+  Feature:
+    - improved performance a little bit
+    - added a way to remove the mod reverting all units (configured on map settings)
+    - decreased max_level for better compatibility with other mods or heavily modded games
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.14
 Date: 2023-10-08
-   - balacing, reduce xp required to level up buildings, it takes alot of time in burning phase (4 hours) 
-   - better compatibility with space exploration, aai industry and krastorio2
+  Balancing:
+    - balacing, reduce xp required to level up buildings, it takes alot of time in burning phase (4 hours)
+  Optimizations:
+    - better compatibility with space exploration, aai industry and krastorio2
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.13
 Date: 2023-10-07
-   - reduce pollution from entities ( configurable ) 
-   - reduce energy usage from entities ( configurable ) 
+  Feature:
+    - reduce pollution from entities ( configurable )
+    - reduce energy usage from entities ( configurable )
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.12
 Date: 2023-10-07
-   - adjust what entities are leveled.
-   Total overhaul with more than 65k entities like py mods are compatible,
-   only the last -mk** gains experience.
-   - add max level setting.
+  Feature:
+    - adjust what entities are leveled
+      Total overhaul with more than 65k entities like py mods are compatible,
+      only the last -mk** gains experience
+    - add max level setting
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.11
 Date: 2023-10-07
-  - fix mining calculation (not working properly)
-  - balance values
-  - try fix some errors when verifying lab entities
-  
+  Balancing:
+    - balance values
+  Bugfix:
+    - fix mining calculation (not working properly)
+    - try fix some errors when verifying lab entities
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.10
 Date: 2023-10-06
-  - Balance default values
-  - fixed not updating exp tables
-  - added new triggers to reset exp tables
-  - added exp feedback for mining-drill and lab
-  - fixed steep first level 
-  
+  Balancing:
+    - Balance default values
+  Bugfix:
+    - fixed not updating exp tables
+    - fixed steep first level
+  Feature:
+    - added new triggers to reset exp tables
+    - added exp feedback for mining-drill and lab
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.9
 Date: 2023-10-05
-  - Fix Major error when some entities from other mods wasn't loadded (Failed to load mods: Error in assignID: Item with name 'entity-name' does not exist) 
-  - Removed part of tiers
-  - added config for most of calculations
-  - fix bug where every entity was level 1 instead of 0
-
+  Bugfix:
+    - Fix Major error when some entities from other mods wasn't loadded (Failed to load mods: Error in assignID: Item with name 'entity-name' does not exist)
+    - Removed part of tiers
+    - fix bug where every entity was level 1 instead of 0
+  Feature:
+    - added config for most of calculations
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.8
 Date: 2023-10-05
-  - Added the new exp curve
-  - increased how many machines are check in each tick
-  - skipped entities that throws error, will check compatibility later.
-  - fix not miniable entities
-  - removed configs (for now) 
+  Feature:
+    - Added the new exp curve
+    - increased how many machines are check in each tick
+  Bugfix:
+    - skipped entities that throws error, will check compatibility later
+    - fix not miniable entities
+    - removed configs (for now)
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.7
 Date: 2023-10-05
-  - Optimize how levels are detected
-  - fixed bug when loading entities from other versions
-  - changing versions should correct values
-  - optimize script to 1/10 of lua spent time.
+  Optimizations:
+    - Optimize how levels are detected
+    - optimize script to 1/10 of lua spent time
+  Bugfix:
+    - fixed bug when loading entities from other versions
+    - changing versions should correct values
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.6
 Date: 2023-10-03
-  - Optimization started (not completed yet)
-  - support for ammo-turrets
-    - increase damage
-    - health
-    - range
-    - decrease cooldown
+  Optimizations:
+    - Optimization started (not completed yet)
+  Feature:
+    - support for ammo-turrets
+      - increase damage
+      - health
+      - range
+      - decrease cooldown
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.5
 Date: 2023-10-03
-  Added thumbnail
+  Info:
+    - Added thumbnail
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.3
 Date: 2023-10-03
   Feature:
     - implemented mining_drill exp
-
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.2
 Date: 2023-10-03
   Feature:
     - major refactor :cherry_blossom:
-    - added dynamically drill, lab assembling-machine and furnaces.
-    - simplified alot of code.
+    - added dynamically drill, lab assembling-machine and furnaces
+    - simplified alot of code
     - dynamically loads entities
     - implemented lab level and research speed
-    - mining-drill WIP.
+    - mining-drill WIP
   Bugfix:
-    - fix double values when using consumption.
-
+    - fix double values when using consumption
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.1
 Date: 2023-10-01
   Feature:
-    - Fork from https://mods.factorio.com/mod/factory-levels @sensenmann 
+    - Fork from https://mods.factorio.com/mod/factory-levels @sensenmann
