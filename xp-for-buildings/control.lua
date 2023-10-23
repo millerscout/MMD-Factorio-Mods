@@ -539,13 +539,17 @@ script.on_event(
 	On_mined_entity,
 	EnabledFilters)
 
+script.on_event(defines.events.on_player_changed_surface, function(pi, si, name, tick)
+	Get_built_machines()
+end)
+
 function Replace_built_entity(entity)
 	if SkippedEntities[entity.name] ~= nil then return end
 	if SkippedEntities[GetRootNameOfMachine(entity.name)] ~= nil then return end
 
 	SortExpTable(entity.type)
 	local expTable = table.remove(global.ExpTable[entity.type])
-	local machine = global.machines[entity.name]
+	local machine = global.machines[GetRootNameOfMachine(entity.name)]
 
 	if expTable == nil then
 		expTable = { level = 0, xpCount = 0 }
