@@ -3,14 +3,25 @@ mmddata = {}
 mmddata["ReferenceBuildings"] = {}
 mmddata["included_entities"] = {}
 
+Custom_multiplier = settings.startup["exp_for_buildings_custom_multiplier"].value
 Range_multiplier = settings.startup["exp_for_buildings_range_multiplier"].value
+
 Max_health_multiplier = settings.startup["exp_for_buildings_max_health_multiplier"].value
 Speed_multiplier = settings.startup["exp_for_buildings_speed_multiplier"].value
 Energy_multiplier = settings.startup["exp_for_buildings_energy_multiplier"].value
 Pollution_multiplier = settings.startup["exp_for_buildings_pollution_multiplier"].value
 Damage_multiplier = settings.startup["exp_for_buildings_damage_multiplier"].value
-
 Productivity_multipliers = settings.startup["exp_for_buildings_productivity_multiplier"].value
+
+if Custom_multiplier > 0 then
+    Max_health_multiplier = Max_health_multiplier * Custom_multiplier
+    Speed_multiplier = Speed_multiplier * Custom_multiplier
+    Energy_multiplier = Energy_multiplier * Custom_multiplier
+    Pollution_multiplier = Pollution_multiplier * Custom_multiplier
+    Damage_multiplier = Damage_multiplier * Custom_multiplier
+    Productivity_multipliers = Productivity_multipliers * Custom_multiplier
+end
+
 Exp_for_buildings_skipped_entities = settings.startup["exp_for_buildings_skipped_entities"].value
 Max_range_for_turrets = settings.startup["exp_for_buildings_max_range_for_turrets"].value
 Force_Effects_On_Entities = settings.startup["exp_for_buildings_Force_Effects_On_Entities"].value
@@ -51,8 +62,8 @@ SkippedEntities["se-delivery-cannon-weapon"] = 0
 
 -- skipped entities temporally, until implemented
 SkippedEntities["vtk-deepcore-mining-moho"] = 0
-SkippedEntities["vtk-deepcore-mining-drill"]=0
-SkippedEntities["vtk-deepcore-mining-drill-advanced"]=0
+SkippedEntities["vtk-deepcore-mining-drill"] = 0
+SkippedEntities["vtk-deepcore-mining-drill-advanced"] = 0
 
 
 EnabledTypes = {}
@@ -81,4 +92,3 @@ if not Disable_mining then
     table.insert(EnabledTypes, "mining-drill")
     table.insert(EnabledFilters, { filter = "type", type = "mining-drill" })
 end
-
