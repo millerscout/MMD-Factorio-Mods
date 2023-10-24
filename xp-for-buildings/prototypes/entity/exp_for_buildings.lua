@@ -79,7 +79,7 @@ function buildings.update_animation_tint(animation, tint)
 end
 
 function buildings.update_machine_tint(machine, level)
-	multiplier = level
+	Multiplier = level
 	base_tint = { r = 1, g = 1, b = 1 }
 	if level <= 25 then
 		baseTintR = -0.02
@@ -89,23 +89,23 @@ function buildings.update_machine_tint(machine, level)
 		baseTintR = 0
 		baseTintG = 0
 		baseTintB = -0.016
-		multiplier = level - 25
+		Multiplier = level - 25
 	elseif level <= 75 then
 		baseTintR = 0
 		baseTintG = 0
 		baseTintB = -0.02
-		multiplier = level - 50
+		Multiplier = level - 50
 	else
 		baseTintR = 0
 		baseTintG = -0.008
 		baseTintB = -0.008
-		multiplier = level - 75
+		Multiplier = level - 75
 	end
 
 	local tint = {
-		r = base_tint.r + multiplier * baseTintR,
-		g = base_tint.g + multiplier * baseTintG,
-		b = base_tint.b + multiplier * baseTintB,
+		r = base_tint.r + Multiplier * baseTintR,
+		g = base_tint.g + Multiplier * baseTintG,
+		b = base_tint.b + Multiplier * baseTintB,
 		a = 1
 	}
 

@@ -1,8 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.35
+Date: 2023-10-23
+  Bugfix:
+    - [Warptorio only] fixes labs not loading experience between warps
+    - [Warptorio only] Optimize built machines
+    - [Warptorio only] fixes alot of warnings 
+---------------------------------------------------------------------------------------------------
 Version: 0.0.34
 Date: 2023-10-22
   Bugfix:
     - fixes changelog for whole mod, thanks to @FaustVX 
+    - fixes migrations for 5dim mods, thanks to @malomaster
   Minor Feature:
     - added Custom multiplier that will be appllied to all other multipliers
     - organized settings tab, thanks to @malomaster

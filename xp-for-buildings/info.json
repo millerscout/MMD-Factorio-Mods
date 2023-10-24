@@ -1,7 +1,7 @@
 {
   "name": "xp-for-buildings",
   "title": "Experience for Buildings",
-  "version": "0.0.33",
+  "version": "0.0.35",
   "author": "millerscout",
   "homepage": "https://github.com/millerscout",
   "description": "building gets xp from working and level up",
@@ -19,6 +19,7 @@
     "? Small_assembling",
     "? pneumatic-transport",
     "? 248k",
+    "? warptorio2",
     "! Factory Levels"
     
   ]
