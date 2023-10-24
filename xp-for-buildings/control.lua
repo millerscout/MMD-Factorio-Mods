@@ -560,12 +560,28 @@ script.on_event(
 	On_mined_entity,
 	EnabledFilters)
 
+local SkippedSurfacesWarptorioTwo = {}
+SkippedSurfacesWarptorioTwo["nauvis"] = 0
+SkippedSurfacesWarptorioTwo["warptorio_factory"] = 0
+SkippedSurfacesWarptorioTwo["warptorio_harvester"] = 0
+SkippedSurfacesWarptorioTwo["warptorio_boiler"] = 0
+
 
 script.on_event(defines.events.on_player_changed_surface, function(pi)
 	if game.active_mods["warptorio2"] ~= nil then
+		local currentSurface = game.get_player(pi.player_index).surface.name
+		if SkippedSurfacesWarptorioTwo[currentSurface] ~= nil then
+			return
+		end
+
+		-- remote.call("warptorio2", "GetHomeSurface")
 		for key, machine in pairs(global.built_machines) do
-			SetStoreCount(machine.entity, machine.level, machine)
-			global.built_machines[key] = nil
+			if machine.entity ~= nil and machine.entity then
+				if SkippedSurfacesWarptorioTwo[machine.entity.surface.name] == nil then
+					SetStoreCount(machine.entity, machine.level, machine)
+					global.built_machines[key] = nil
+				end
+			end
 		end
 
 

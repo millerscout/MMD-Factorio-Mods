@@ -27,6 +27,8 @@ function CheckResultItemAndAdd(recipe)
         for _, r in pairs(recipe.results) do
             if r.name ~= nil then
                 IncludeEntity(r.name)
+            elseif r[1] ~= nil and type(r[1]) == "string" then
+                IncludeEntity(r[1])
             end
         end
     end
@@ -39,6 +41,8 @@ function CheckResultItemAndAdd(recipe)
             for _, r in pairs(recipe.normal.results) do
                 if r.name ~= nil then
                     IncludeEntity(r.name)
+                elseif r[1] ~= nil and type(r[1]) == "string" then
+                    IncludeEntity(r[1])
                 end
             end
         end
@@ -52,6 +56,8 @@ function CheckResultItemAndAdd(recipe)
             for _, r in pairs(recipe.expensive.results) do
                 if r.name ~= nil then
                     IncludeEntity(r.name)
+                elseif r[1] ~= nil and type(r[1]) == "string" then
+                    IncludeEntity(r[1])
                 end
             end
         end
