@@ -106,16 +106,9 @@ local needsUpdate = true
 function RunPatches()
 	if needsUpdate then
 		needsUpdate = false
-		if global.mmd_patch ~= #Patches then
-			if global.mmd_patch == nil then global.mmd_patch = 0 end
-			for i = global.mmd_patch + 1, #Patches, 1 do
-				Patches[i]()
-			end
-			for key, value in pairs(aa) do
-				game.print(key .. "__" .. value)
-			end
+		for i = 0 + 1, #Patches, 1 do
+			Patches[i]()
 		end
-		global.mmd_patch = #Patches
 	end
 end
 
@@ -342,7 +335,6 @@ function Upgrade_entity(surface, targetname, sourceentity)
 
 	local existing_requests = surface.find_entity("item-request-proxy", sourceentity.position)
 	if existing_requests then
-		-- Module requests do not survive the machine being replaced.  Preserve them before the machine is replaced.
 		item_requests = {}
 		for module_name, count in pairs(existing_requests.item_requests) do
 			item_requests[module_name] = count
@@ -464,7 +456,6 @@ function replace_machines(entities)
 						elseif (should_have_level > metadata.level and metadata.level >= machine.max_level and machine.next_machine ~= nil) then
 							local created = Upgrade_entity(entity.surface, machine.next_machine, entity)
 							created.products_finished = 0
-							global.built_machines[entity.unit_number].level = should_have_level
 							break
 						end
 					end
