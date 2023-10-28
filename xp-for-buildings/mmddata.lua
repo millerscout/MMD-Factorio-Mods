@@ -59,6 +59,26 @@ Max_level = settings.startup["exp_for_buildings_max_level"].value
 SkippedEntities = {}
 SkippedEntities["se-delivery-cannon"] = 0
 SkippedEntities["se-delivery-cannon-weapon"] = 0
+SkippedEntities["se-energy-beam-defence"] = 0
+SkippedEntities["se-meteor-defence"] = 0
+SkippedEntities["se-meteor-point-defence"] = 0
+SkippedEntities["kr-mineral-water-pumpjack"] = 0
+SkippedEntities["recycling-machine"] = 0
+SkippedEntities["kr-fluid-burner"] = 0
+SkippedEntities["capsule-ammo-turret-rampant-arsenal"] = 0
+SkippedEntities["se-meteor-point-defence-container"] = 0
+SkippedEntities["se-space-elevator"] = 0
+SkippedEntities["se-spaceship-rocket-engine"] = 0
+SkippedEntities["se-spaceship-ion-engine"] = 0
+SkippedEntities["se-recycling-facility"] = 0
+SkippedEntities["se-space-telescope-gammaray"] = 0
+SkippedEntities["se-space-telescope-microwave"] = 0
+SkippedEntities["se-space-telescope-radio"] = 0
+SkippedEntities["se-space-telescope-xray"] = 0
+SkippedEntities["se-energy-transmitter-emitter"] = 0
+SkippedEntities["se-meteor-defence-container"] = 0
+SkippedEntities["se-spaceship-antimatter-engine"] = 0
+
 
 -- skipped entities temporally, until implemented
 SkippedEntities["vtk-deepcore-mining-moho"] = 0

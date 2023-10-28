@@ -99,6 +99,14 @@ end)
 script.on_configuration_changed(function()
 	SetupOnChange()
 	AddEntitiesToDiscoScience()
+	if IsDebug then
+		game.write_file("xpForbuildings.log", "---\n", false)
+		for key, m in pairs(game.entity_prototypes) do
+			if string.find(key, '-level-') then
+				game.write_file("xpForbuildings.log", serpent.block(key) .. '\n', true)
+			end
+		end
+	end
 end)
 
 
@@ -143,13 +151,14 @@ function CheckSurface(surface)
 				level = current_level,
 				rootName = rootName
 			}
-			if entity.type == "lab" then
+			if entity.type == "lab" and global.ExpTable ~= nil and global.ExpTable[entity.type] ~= nil then
 				local expTable = table.remove(global.ExpTable[entity.type])
 
 				if expTable ~= nil then
 					global.built_machines[entity.unit_number].research_count = expTable.xpCount
 				end
-			elseif entity.type == "mining-drill" then
+			elseif entity.type == "mining-drill" and global.ExpTable ~= nil and global.ExpTable[entity.type] ~= nil then
+				local expTable = table.remove(global.ExpTable[entity.type])
 				if expTable ~= nil then
 					global.built_machines[entity.unit_number].mining_count = expTable.xpCount
 				end
@@ -441,21 +450,19 @@ function replace_machines(entities)
 			if machine ~= nil and entity ~= nil and not Revert_levels then
 				xpCount = GetCount(entity)
 
-				should_have_level = Determine_level(metadata.level, entity.type, xpCount)
+				local should_have_level = Determine_level(metadata.level, entity.type, xpCount)
 
 				local text = math.min(should_have_level, machine.max_level)
 
 				if machine ~= nil and should_have_level > 0 then
 					if metadata.level ~= should_have_level then
 						if (should_have_level > metadata.level and metadata.level < machine.max_level) then
-							created = Upgrade_entity(entity.surface,
+							Upgrade_entity(entity.surface,
 								machine.level_name .. text,
 								entity)
-							global.built_machines[created.unit_number].level = should_have_level
 							break
 						elseif (should_have_level > metadata.level and metadata.level >= machine.max_level and machine.next_machine ~= nil) then
-							local created = Upgrade_entity(entity.surface, machine.next_machine, entity)
-							created.products_finished = 0
+							Upgrade_entity(entity.surface, machine.next_machine, entity)
 							break
 						end
 					end
@@ -556,7 +563,6 @@ SkippedSurfacesWarptorioTwo["nauvis"] = 0
 SkippedSurfacesWarptorioTwo["warptorio_factory"] = 0
 SkippedSurfacesWarptorioTwo["warptorio_harvester"] = 0
 SkippedSurfacesWarptorioTwo["warptorio_boiler"] = 0
-
 
 script.on_event(defines.events.on_player_changed_surface, function(pi)
 	if game.active_mods["warptorio2"] ~= nil then

@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.39
+Date: 2023-10-28
+  Bugfix:
+    - fixes errors while creating entities
+    - fixes errors while adding the mod for the first time in running game
+    - [SE] fixes compatibility issues
+    - [SE] added migrations
+  Minor Feature:
+    - added a way to write to log, all entities that are being processed by the mod
+---------------------------------------------------------------------------------------------------
 Version: 0.0.38
 Date: 2023-10-26
   Bugfix:
