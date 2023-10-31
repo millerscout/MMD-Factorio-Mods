@@ -110,3 +110,24 @@ if mods["angelsrefining"] then
 		bonus_module_slots = { 0, 1 }
 	}
 end
+
+-- Archipelago randomizer makes Assembling machine one have fluid boxes. Pre-initialize that just in case mod loading order
+-- prevents this from being loaded after the archipelago randomizer mod.
+-- One can't user mod["AP-whatever"] as the name of the mod is randomized too.
+-- instead, one has to detect with string.match the existence of Archipelago randomizer mod.
+function mod_is_AP(str)
+    -- lua string.match is way more restrictive than regex. Regex would be "^AP-\d{20}-P[1-9]\d*-.+$"
+	local result = string.match(str, "^AP%-W?%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%-P[1-9]%d-%-.+$")
+	if result ~= nil then
+		log("Archipelago Mod: " .. result .. " is loaded.")
+	end
+	return result ~= nil
+end
+for name, _ in pairs(mods) do
+    if mod_is_AP(name) then
+        data.raw["assembling-machine"]["assembling-machine-1"].crafting_categories = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-3"].crafting_categories)
+	data.raw["assembling-machine"]["assembling-machine-2"].crafting_categories = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-3"].crafting_categories)
+	data.raw["assembling-machine"]["assembling-machine-1"].fluid_boxes = table.deepcopy(data.raw["assembling-machine"]["assembling-machine-2"].fluid_boxes)
+	break
+    end
+end
