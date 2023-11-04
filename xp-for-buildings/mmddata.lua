@@ -78,6 +78,10 @@ SkippedEntities["se-space-telescope-xray"] = 0
 SkippedEntities["se-energy-transmitter-emitter"] = 0
 SkippedEntities["se-meteor-defence-container"] = 0
 SkippedEntities["se-spaceship-antimatter-engine"] = 0
+SkippedEntities["mining-depot"] = 0
+SkippedEntities["mining-drone"] = 0
+
+
 
 
 -- skipped entities temporally, until implemented

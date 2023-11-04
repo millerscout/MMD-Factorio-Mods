@@ -1,4 +1,20 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.41
+Date: 2023-11-03
+  Bugfix:
+    - Compatibility fix with Mining-Drones-Tiberium
+    - Error when completing research
+  Minor Features:
+    - Compatibility with Archipelago Randomizer, thanks to CaitSith2 
+---------------------------------------------------------------------------------------------------
+Version: 0.0.40
+Date: 2023-10-29
+  Optimizations:
+    - changing levels should update builtexp directly
+  Bugfix:
+    - buildings not leveling
+    - now every patch run, should migrate exptable
+---------------------------------------------------------------------------------------------------
 Version: 0.0.39
 Date: 2023-10-28
   Bugfix:

@@ -114,9 +114,14 @@ local needsUpdate = true
 function RunPatches()
 	if needsUpdate then
 		needsUpdate = false
-		for i = 0 + 1, #Patches, 1 do
-			Patches[i]()
+		if global.patch_number ~= #Patches then
+			MigrateExpTables()
+			if global.patch_number == nil then global.patch_number = 0 end
+			for i = global.patch_number + 1, #Patches, 1 do
+				Patches[i]()
+			end
 		end
+		global.patch_number = #Patches
 	end
 end
 
@@ -330,7 +335,7 @@ function Insert_inventory_contents(inventory, contents)
 	end
 end
 
-function Upgrade_entity(surface, targetname, sourceentity)
+function Upgrade_entity(surface, targetname, sourceentity, should_be_level)
 	if SkippedEntities[targetname] ~= nil then return end
 	local unit_number = sourceentity.unit_number
 	local xpCount = GetCount(sourceentity)
@@ -391,7 +396,7 @@ function Upgrade_entity(surface, targetname, sourceentity)
 		entity = created,
 		unit_number = created.unit_number,
 		rootName = global.built_machines[unit_number].rootName,
-		level = global.built_machines[unit_number].level
+		level = should_be_level
 	}
 
 
@@ -459,10 +464,10 @@ function replace_machines(entities)
 						if (should_have_level > metadata.level and metadata.level < machine.max_level) then
 							Upgrade_entity(entity.surface,
 								machine.level_name .. text,
-								entity)
+								entity, should_have_level)
 							break
 						elseif (should_have_level > metadata.level and metadata.level >= machine.max_level and machine.next_machine ~= nil) then
-							Upgrade_entity(entity.surface, machine.next_machine, entity)
+							Upgrade_entity(entity.surface, machine.next_machine, entity, should_have_level)
 							break
 						end
 					end
@@ -472,7 +477,7 @@ function replace_machines(entities)
 					metadata.rootName, _ = GetStringWith(entity.name, '-level-')
 				end
 				if entity.name ~= metadata.rootName then
-					Upgrade_entity(entity.surface, metadata.rootName, entity)
+					Upgrade_entity(entity.surface, metadata.rootName, entity, 0)
 				end
 			end
 		end
@@ -630,10 +635,10 @@ function Replace_built_entity(entity)
 			local text = math.min(should_have_level, machine.max_level)
 
 			local created = Upgrade_entity(entity.surface,
-				machine.level_name .. text, entity)
+				machine.level_name .. text, entity, should_have_level)
 		end
 	else
-		Upgrade_entity(entity.surface, GetStringWith(entity.name, '-level-'), entity)
+		Upgrade_entity(entity.surface, GetStringWith(entity.name, '-level-'), entity, 0)
 	end
 end
 
@@ -676,13 +681,15 @@ script.on_event(
 	defines.events.on_research_finished,
 	function(data)
 		if not data.by_script then
-			for _, machine in pairs(global.built_machines) do
-				if machine.entity.type == "lab" then
+			for number, machine in pairs(global.built_machines) do
+				if machine.entity.valid and machine.entity.type == "lab" then
 					if machine.research_count == nil then
 						machine.research_count = data.research.research_unit_count
 					else
 						machine.research_count = machine.research_count + data.research.research_unit_count
 					end
+				elseif not machine.entity.valid then
+					global.built_machines[number] = nil
 				end
 			end
 		end

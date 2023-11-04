@@ -54,5 +54,4 @@ function MigrateExpTables()
 end
 
 Patches = {}
-Patches[1] = MigrateExpTables
--- Patches[2] = ResetAttackTechnology
+Patches[1] = Get_built_machines
